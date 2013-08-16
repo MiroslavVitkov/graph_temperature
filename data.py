@@ -14,7 +14,7 @@ class Data(object):
     """General data structuring node. Can be associated with a file in r/rw/w/None way.
 
     """
-    def __init__(self, datapoints, prev_node=None, next_node=None file=None, file_mode=None)
+    def __init__(self, datapoints, prev_node=None, next_node=None, file=None, file_mode=None):
         # Doubly linked list
         self.prev_node = prev_node
         self,next_node = next_node
