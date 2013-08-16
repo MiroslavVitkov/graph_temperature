@@ -7,7 +7,7 @@ Coordiantes are measured in pixels.
 
 import matplotlib.pyplot as plt
 
-class Plot(object):
+class Dynamic(object):
     def __init__(self, x_axis, width, height):
         self.x = x_axis
         self.y = None
@@ -29,7 +29,7 @@ class Plot(object):
 
         self.line1, = self.ax.plot(self.x, self.x, 'r-') # Returns a tuple of line objects, thus the comma
 
-    def update_fig(self, y):
+    def update_fig(self, y_pixels):
         self.line1.set_ydata(y)
         self.fig.canvas.draw()
 
@@ -39,7 +39,7 @@ class Plot(object):
 
 def main():
     """Unit test."""
-    p = Plot(x_axis=range(100), width=640, height=480)
+    p = Dynamic(x_axis=range(100), width=640, height=480)
     print "Graph window size is:", p.getsize()
     for i in range(1, 100):
         temps = [t / float(i) for t in range(100)]
