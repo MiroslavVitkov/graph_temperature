@@ -1,9 +1,19 @@
 #!/bin/python
 
-from plot import Plot
+"""Update plot with new pixel point.
 
-x = range(100)
-p = Plot(x_axis = x, width=256, height=256)
-for i in range(1,10):
-    y = [t / float(i) for t in x]
-    p.update_fig
+"""
+
+import plot
+import data
+
+
+class PlotManager(object, x_axis):
+    def __init__(self):
+        self.x = x_axis
+        self.p = plot.Dynamic(x_axis=self.x, width=255, height=123)
+        self.y = data.Node(datapoints=len(x))
+
+    def notify_new_datapoint(self, y_pixels):
+        self.y.add(y_pixels)
+        self.p.update_figure(y=self.y)
