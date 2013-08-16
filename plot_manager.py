@@ -17,3 +17,10 @@ class PlotManager(object, x_axis):
     def notify_new_datapoint(self, y_pixels):
         self.y.add(y_pixels)
         self.p.update_figure(y=self.y)
+
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
