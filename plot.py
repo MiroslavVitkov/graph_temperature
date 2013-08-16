@@ -1,7 +1,6 @@
 #!/bin/python
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 class Plot(object):
     def __init__(self, x_axis):
@@ -14,7 +13,16 @@ class Plot(object):
 
     def update_fig(self, y):
         line1, = self.ax.plot(self.x, y, 'r-') # Returns a tuple of line objects, thus the comma
-        for point in np.linspace(0, 10*np.pi, 500):
+        for point in self.x:
             line1.set_ydata(y)
             self.fig.canvas.draw()
 
+
+def main():
+    """Unit test."""
+    p = Plot(range(100))
+    while True:
+        p.update_fig(range(100))
+
+if __name__ == "__main__":
+    main()
