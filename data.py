@@ -23,8 +23,11 @@ class Node(object):
         self.file = file
         self.file_mode = file_mode
 
-        # Initialize all memoty to prevent memory allocation at runtime
-        self.temperatures = [0, ] * datapoints
+        #TODO: Initialize all memoty to prevent memory allocation at runtime
+        self.data = []
+
+    def add(self, x):
+        self.data.append(x)
 
 
 def main():
