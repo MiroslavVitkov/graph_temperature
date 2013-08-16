@@ -30,10 +30,8 @@ class Plot(object):
         self.line1, = self.ax.plot(self.x, self.x, 'r-') # Returns a tuple of line objects, thus the comma
 
     def update_fig(self, y):
-        #line1, = self.ax.plot(self.x, y, 'r-') # Returns a tuple of line objects, thus the comma
-        for point in self.x:
-            self.line1.set_ydata(y)
-            self.fig.canvas.draw()
+        self.line1.set_ydata(y)
+        self.fig.canvas.draw()
 
     def getsize(self):
         f = self.fig
@@ -43,9 +41,8 @@ def main():
     """Unit test."""
     p = Plot(x_axis=range(100), width=640, height=480)
     print "Graph window size is:", p.getsize()
-    for i in range(1, 10):
+    for i in range(1, 100):
         temps = [t / float(i) for t in range(100)]
-        print len(temps)
         p.update_fig(temps)
 
 if __name__ == "__main__":
