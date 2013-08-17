@@ -7,6 +7,8 @@ Coordinates are measured in pixels.
 
 import matplotlib.pyplot as plt
 
+PLOT_WIDTH = 640
+PLOT_HEIGHT = 480
 
 class Manager(object):
     """Update plot with new pixel point.
@@ -14,7 +16,10 @@ class Manager(object):
     """    
     def __init__(self, x_axis):
         self.x_axis = x_axis
-        self.p = View(x_axis=self.x_axis, width=640, height=480)
+        self.p = View(x_axis=self.x_axis,
+                      width=PLOT_WIDTH,
+                      height=PLOT_HEIGHT
+                     )
         self.capacity = len(self.x_axis)
         self.next_y_index = 0
         self.y_axis = [None] * self.capacity
