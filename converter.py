@@ -6,9 +6,9 @@
 #import numpy as np
 
 def linscale_point(point, inrange, outrange):
-    normalized = (point - inrange[0]) / inrange[1] - inrange[0]
+    normalized = (point - inrange[0]) / (inrange[1] - inrange[0])
     scaled = normalized * (outrange[1] - outrange[0])
-    shifted = normalized - outrange[0]
+    shifted = scaled - outrange[0]
     return shifted 
 
 #def linscale_vector(in_vect, out_max):
@@ -18,8 +18,9 @@ def linscale_point(point, inrange, outrange):
 #    return int(round(scaled))
 
 def temp2pixels(temp, temp_range, graph_height):
-    return linscale_point(temp, temp_range, (0, graph_height))
-    
+    pix=  linscale_point(temp, temp_range, (0, graph_height))
+    return int(round(pix))
+
 
 def main():
     pass
