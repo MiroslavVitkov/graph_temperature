@@ -17,7 +17,7 @@ class Node(object):
     def __init__(self, datapoints, prev_node=None, next_node=None, file=None, file_mode=None):
         # Doubly linked list
         self.prev_node = prev_node
-        self,next_node = next_node
+        self.next_node = next_node
 
         # File handle
         self.file = file
