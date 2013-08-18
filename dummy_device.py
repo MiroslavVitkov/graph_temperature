@@ -7,11 +7,14 @@ Pass a callback to MainManager
 
 import time
 import random
-from upper_management import MainManager
 
 
-m = MainManager()
-while $(true):
-    time.sleep(1)  # one second
-    new = random.randint(-30000, 50000)
-    m.incoming_data(new)
+class Simple(object):
+    def __init__(self, clb):
+        self.clb = clb
+
+    def run(self):
+        while True:
+            time.sleep(1)  # one second
+            new = random.randint(-20000, 50000)
+            self.clb(new)
