@@ -1,7 +1,7 @@
 #!/bin/python
 
 """Construct a visible plot, connecting the given set of points.
-Coordinates are measured in pixels.
+Coordinates are normalized.
 
 """
 
@@ -27,12 +27,14 @@ class Manager(object):
     def add_point(self, y):
         self.y_axis[self.next_y_index] = y
         self.next_y_index += 1
+        assert self.next_y_index <= self.capacity, "Buffer overflow"
         self.p.update_figure(y_pixels=self.y_axis)
 
     def clear(self):
         self.y_axis = [None] * self.capacity
         self.next_y_index = 0
         self.p.update_figure(y_pixels=self.y_axis)
+
 
 class View(object):
     def __init__(self, x_axis, width, height):
@@ -60,15 +62,15 @@ class View(object):
         self.line1.set_ydata(y_pixels)
         self.fig.canvas.draw()
 
-    def getsize(self):
+    def get_size(self):
         f = self.fig
-        return dict(width=self.width, height=self.height)
+        return (self.width, self.height)
 
 def main():
     """Unit test."""
     if 0:
         p = View(x_axis=range(100), width=640, height=480)
-        print "Graph window size is:", p.getsize()
+        print "Graph window size is:", p.get_size()
         for i in range(1, 100):
             temps = [t / float(i) for t in range(100)]
             p.update_fig(temps)
@@ -78,6 +80,14 @@ def main():
         for i in range(1, 5):
             print "Run", i
             for j in range(100):
+                m.add_point(j / float(i))
+            m.clear()
+
+    if 0:
+        m = Manager(x_axis=range(0, PLOT_WIDTH, 5))
+        print "Graph window size is:", m.p.get_size()
+        for i in range(1,5):
+            for j in range(0, PLOT_HEIGHT, 5):
                 m.add_point(j / float(i))
             m.clear()
 
