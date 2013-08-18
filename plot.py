@@ -40,34 +40,52 @@ class Manager(object):
 class Window(object):
     """Hold plot objects."""
     def __init__(self, plots_num, x_axis, plot_width, plot_height):
+        # Horizontal axis for every and all plots.
         self.x_axis=x_axis
 
+        # Redraw plot as soon as self.fig.canvas.draw() is called.
         plt.ion()
 
-        # Create the window space
+        # Create the window surface
         dpi=80  # default value
         size_x = (float(plot_width) / dpi) * plots_num[0]
         size_y = (float(plot_height) / dpi) * plots_num[1]
         self.fig = plt.figure(figsize=(size_x, size_y), dpi=dpi,
-                                       facecolor=None, edgecolor=None,
-                                       linewidth=0.0, frameon=None,
-                                       subplotpars=None, tight_layout=None
-                                      )
+                              facecolor=None, edgecolor=None,
+                              linewidth=.0, frameon=None,
+                              subplotpars=None, tight_layout=None
+                             )
 
-        # Create the individual plots        
-        self.ax = self.fig.add_subplot(111)
-        self.line1, = self.ax.plot(self.x_axis, self.x_axis)
-        self.g = Graph(x_axis=self.x_axis, y_axis=self.line1, figure=self.fig)
+        # Create the individual plots
+        def create_plot(subplot):
+            ax = self.fig.add_subplot(subplot)
+            line, = ax.plot(self.x_axis, self.x_axis)
+            graph = Graph(y_axis=line, figure=self.fig)
+            return graph
+
+        self.plot_one_minute = create_plot(subplot=231)
+        self.plot_one_hour = create_plot(subplot=232)
+        self.plot_one_day = create_plot(subplot=233)
+        self.plot_one_week = create_plot(subplot=234)
+        self.plot_one_month = create_plot(subplot=235)
+        self.plot_one_year = create_plot(subplot=236)
+
+        self.plots = [self.plot_one_minute,
+                      self.plot_one_hour,
+                      self.plot_one_day,
+                      self.plot_one_week,
+                      self.plot_one_month,
+                      self.plot_one_year,
+                     ]
 
     def update_figure(self, y_pixels):
-        self.g.update_figure(y_pixels)
-        #self.line1.set_ydata(y_pixels)
-        #self.fig.canvas.draw()
+        for p in self.plots:
+            p.update_figure(y_pixels)
+
 
 class Graph(object):
     """Single 2-D dynamic plot."""
-    def __init__(self, x_axis, y_axis, figure):
-        self.x_axis = x_axis
+    def __init__(self, y_axis, figure):
         self.y_axis = y_axis
         self.fig = figure
 
