@@ -3,6 +3,9 @@
 """Device -> hw_comm -> dispatch -> parse_com -> convert -> plot
                                  -> log
 
+Update minute, hour and day plots every second.
+Update week, month and year plots every day.
+
 """
 
 import dummy_device as dev
