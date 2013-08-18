@@ -15,7 +15,8 @@ class MainManager(object):
         self.y = []
 
         # Plots that depend on streamed data
-        self.p = plot.Manager(x_axis=range(0, 60))
+        axis_one_minute = conv.seconds2pixels(time=range(60), time_range=(0, 60), graph_length=640)
+        self.p = plot.Manager(x_axis=axis_one_minute)
 
     def handle_incoming_measurement(self, measurement):
         y = conv.temp2pixels(temp=measurement,
