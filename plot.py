@@ -42,6 +42,8 @@ class Window(object):
     def __init__(self, plots_num, x_axis, plot_width, plot_height):
         self.x_axis=x_axis
 
+        plt.ion()
+
         dpi=80  # default value
         size_x = float(plot_width) / dpi
         size_y = float(plot_height) / dpi
@@ -50,11 +52,15 @@ class Window(object):
                                        linewidth=0.0, frameon=None,
                                        subplotpars=None, tight_layout=None
                                       )
-        self.g = Graph(x_axis=self.x_axis, width=640, height=240)
+        
+        #self.g = Graph(x_axis=self.x_axis, width=640, height=240)
+        self.ax = self.fig.add_subplot(111)
+        self.line1, = self.ax.plot(self.x_axis, self.x_axis)
 
     def update_figure(self, y_pixels):
-        self.g.update_figure(y_pixels)
-
+        #self.g.update_figure(y_pixels)
+        self.line1.set_ydata(y_pixels)
+        self.fig.canvas.draw()
 
 class Graph(object):
     """Single 2-D dynamic plot."""
