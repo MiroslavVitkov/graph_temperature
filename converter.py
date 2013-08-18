@@ -25,11 +25,11 @@ def seconds2pixels(time, time_range, graph_length):
         for t in time:
             #p = linscale(t, time_range, (0, graph_length))
             #pix.append(int(round(p)))
-            pix.append(normalize(time - time_range[0]), time_range[1] - time_range[0])
+            pix.append(normalize(t - time_range[0], time_range[1] - time_range[0]))
     else:
         #p = linscale(time, time_range, (0, graph_lenght))
         #pix = int(round(p))
-        pix = normalize(time - time_range[0]), time_range[1] - time_range[0])
+        pix = normalize(time - time_range[0], time_range[1] - time_range[0])
     return pix
 
 
