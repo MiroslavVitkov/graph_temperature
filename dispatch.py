@@ -1,7 +1,7 @@
 #!/bin/python
 
 """Device -> hw_comm -> dispatch -> parse_com -> convert -> plot
-                                 -> parse_com -> log
+                                 -> log
 
 """
 
