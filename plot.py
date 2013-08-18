@@ -16,10 +16,10 @@ class Manager(object):
     """    
     def __init__(self, x_axis):
         self.x_axis = x_axis
-        self.p = View(x_axis=self.x_axis,
-                      width=PLOT_WIDTH,
-                      height=PLOT_HEIGHT
-                     )
+        self.p = Window(x_axis=self.x_axis,
+                        width=PLOT_WIDTH,
+                        height=PLOT_HEIGHT
+                       )
         self.capacity = len(self.x_axis)
         self.next_y_index = 0
         self.y_axis = [None] * self.capacity
@@ -36,7 +36,28 @@ class Manager(object):
         self.p.update_figure(y_pixels=self.y_axis)
 
 
-class View(object):
+class Window(object):
+    """Hold plot objects."""
+    def __init__(self, x_axis, width, height):
+        self.x_axis=x_axis
+
+        width = 640
+        height = 480
+        dpi=80  # default value
+        size_x = float(width) / dpi
+        size_y = float(height) / dpi
+        self.fig = plt.figure(figsize=(size_x, size_y), dpi=dpi,
+                                       facecolor=None, edgecolor=None,
+                                       linewidth=0.0, frameon=None,
+                                       subplotpars=None, tight_layout=None)
+        self.g = Graph(x_axis=self.x_axis, width=640, height=240)
+
+    def update_figure(self, y_pixels):
+        self.g.update_figure(y_pixels)
+
+
+class Graph(object):
+    """Single 2-D dynamic plot."""
     def __init__(self, x_axis, width, height):
         self.x = x_axis
         self.y = None

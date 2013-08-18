@@ -14,6 +14,9 @@ import data
 import converter as conv
 
 
+DATAPOINTS_PER_GRAPH = 60
+
+
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
@@ -23,14 +26,14 @@ class MainManager(object):
         self.y = []
 
         # Plots that depend on streamed data
-        self.p = plot.Manager(x_axis=conv.get_axis(60))
+        self.p = plot.Manager(x_axis=conv.get_axis(DATAPOINTS_PER_GRAPH))
 
     def handle_incoming_measurement(self, measurement):
         # Log
         pass
 
         # Draw
-        self.p.add_point(measurement - conv.MIN_TEMP)
+        self.p.add_point(measurement - conv.MIN_TEMP)  # scale [0, TEMP_RANGE]
 
     def handle_new_dataset(self):
         self.p.clear()
