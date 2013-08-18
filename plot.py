@@ -7,8 +7,8 @@ Coordinates are normalized.
 
 import matplotlib.pyplot as plt
 
-PLOT_WIDTH = 640
-PLOT_HEIGHT = 480
+PLOT_WIDTH = 300
+PLOT_HEIGHT = 200
 
 class Manager(object):
     """Hold pixel data.
@@ -16,7 +16,7 @@ class Manager(object):
     """    
     def __init__(self, x_axis):
         self.x_axis = x_axis
-        self.p = Window(plots_num=(1, 1),
+        self.p = Window(plots_num=(3, 2),
                         x_axis=self.x_axis,
                         plot_width=PLOT_WIDTH,
                         plot_height=PLOT_HEIGHT
@@ -50,6 +50,7 @@ class Window(object):
         dpi=80  # default value
         size_x = (float(plot_width) / dpi) * plots_num[0]
         size_y = (float(plot_height) / dpi) * plots_num[1]
+        print size_x*dpi, size_y*dpi
         self.fig = plt.figure(figsize=(size_x, size_y), dpi=dpi,
                               facecolor=None, edgecolor=None,
                               linewidth=.0, frameon=None,
@@ -62,21 +63,14 @@ class Window(object):
             line, = ax.plot(self.x_axis, self.x_axis)
             graph = Graph(y_axis=line, figure=self.fig)
             return graph
-
-        self.plot_one_minute = create_plot(subplot=231)
-        self.plot_one_hour = create_plot(subplot=232)
-        self.plot_one_day = create_plot(subplot=233)
-        self.plot_one_week = create_plot(subplot=234)
-        self.plot_one_month = create_plot(subplot=235)
-        self.plot_one_year = create_plot(subplot=236)
-
-        self.plots = [self.plot_one_minute,
-                      self.plot_one_hour,
-                      self.plot_one_day,
-                      self.plot_one_week,
-                      self.plot_one_month,
-                      self.plot_one_year,
-                     ]
+        assert plots_num[0] <= 9, "Number of plots must be a single digit!"
+        assert plots_num[1] <= 9, "Number of plots must be a single digit!"
+        self.plots = []
+        plots_map = plots_num[0] * 100 + plots_num[1] * 10
+        for i in range(0, plots_num[0]):
+            for j in range(1, plots_num[1] + 1):
+                p = create_plot(plots_map + i*plots_num[1] + j)
+                self.plots.append(p)
 
     def update_figure(self, y_pixels):
         for p in self.plots:
