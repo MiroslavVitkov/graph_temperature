@@ -11,14 +11,15 @@ PLOT_WIDTH = 640
 PLOT_HEIGHT = 480
 
 class Manager(object):
-    """Update plot with new pixel point.
+    """Hold pixel data.
 
     """    
     def __init__(self, x_axis):
         self.x_axis = x_axis
-        self.p = Window(x_axis=self.x_axis,
-                        width=PLOT_WIDTH,
-                        height=PLOT_HEIGHT
+        self.p = Window(plots_num=(1, 1),
+                        x_axis=self.x_axis,
+                        plot_width=PLOT_WIDTH,
+                        plot_height=PLOT_HEIGHT
                        )
         self.capacity = len(self.x_axis)
         self.next_y_index = 0
@@ -38,18 +39,17 @@ class Manager(object):
 
 class Window(object):
     """Hold plot objects."""
-    def __init__(self, x_axis, width, height):
+    def __init__(self, plots_num, x_axis, plot_width, plot_height):
         self.x_axis=x_axis
 
-        width = 640
-        height = 480
         dpi=80  # default value
-        size_x = float(width) / dpi
-        size_y = float(height) / dpi
+        size_x = float(plot_width) / dpi
+        size_y = float(plot_height) / dpi
         self.fig = plt.figure(figsize=(size_x, size_y), dpi=dpi,
                                        facecolor=None, edgecolor=None,
                                        linewidth=0.0, frameon=None,
-                                       subplotpars=None, tight_layout=None)
+                                       subplotpars=None, tight_layout=None
+                                      )
         self.g = Graph(x_axis=self.x_axis, width=640, height=240)
 
     def update_figure(self, y_pixels):
