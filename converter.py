@@ -8,21 +8,28 @@ def linscale(point, inrange, outrange):
     normalized = (point - inrange[0]) / float((inrange[1] - inrange[0]))
     scaled = normalized * (outrange[1] - outrange[0])
     shifted = scaled - outrange[0]
-    return shifted 
+    return shifted
+
+def normalize(point, max):
+    return point / float(max)
 
 def temp2pixels(temp, temp_range, graph_height):
-    pix = linscale(temp, temp_range, (0, graph_height))
-    return int(round(pix))
+    #p = linscale(temp, temp_range, (0, graph_height))
+    #pix = int(round(pix))
+    pix = normalize(temp - temp_range[0], temp_range[1] - temp_range[0])
+    return pix
 
 def seconds2pixels(time, time_range, graph_length):
     if isinstance(time, col.Iterable):
         pix = []
         for t in time:
-            p = linscale(t, time_range, (0, graph_length))
-            pix.append(int(round(p)))
+            #p = linscale(t, time_range, (0, graph_length))
+            #pix.append(int(round(p)))
+            pix.append(normalize(time - time_range[0]), time_range[1] - time_range[0])
     else:
-        p = linscale(time, time_range, (0, graph_lenght))
-        pix = int(round(p))
+        #p = linscale(time, time_range, (0, graph_lenght))
+        #pix = int(round(p))
+        pix = normalize(time - time_range[0]), time_range[1] - time_range[0])
     return pix
 
 
