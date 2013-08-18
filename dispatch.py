@@ -23,14 +23,14 @@ class MainManager(object):
         self.y = []
 
         # Plots that depend on streamed data
-        axis_one_minute = conv.seconds2pixels(time=range(60), time_range=(0, 60), graph_length=640)
-        self.p = plot.Manager(x_axis=axis_one_minute)
+        self.p = plot.Manager(x_axis=conv.get_axis(60))
 
     def handle_incoming_measurement(self, measurement):
-        y = conv.temp2pixels(temp=measurement,
-                             temp_range=(-20000, 50000),
-                             graph_height=480)
-        self.p.add_point(y)
+        # Log
+        pass
+
+        # Draw
+        self.p.add_point(measurement - conv.MIN_TEMP)
 
     def handle_new_dataset(self):
         self.p.clear()

@@ -4,6 +4,19 @@
 
 import collections as col
 
+MAX_TEMP = 50000
+MIN_TEMP = -20000
+TEMP_RANGE = MAX_TEMP - MIN_TEMP
+
+def get_axis(num_points):
+    """The plot expects same ranges on all axes. This function
+    returns an evenly spaced axis in the maxres range.
+
+    """
+    step = int(round(TEMP_RANGE / float(num_points)))
+    axis = [i for i in range(0, TEMP_RANGE, step)]
+    assert len(axis) == num_points, len(axis)
+    return axis
 
 def linscale(point, inrange, outrange):
     normalized = (point - inrange[0]) / float((inrange[1] - inrange[0]))
