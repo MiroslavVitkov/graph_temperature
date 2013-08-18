@@ -1,6 +1,7 @@
 #!/bin/python
 
-"""Business logic objects.
+"""Device -> hw_comm -> dispatch -> plot
+                                 -> log
 
 """
 
