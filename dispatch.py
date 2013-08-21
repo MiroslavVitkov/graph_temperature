@@ -23,14 +23,14 @@ class MainManager(object):
         self.s = dev.Simple(clb=self.handle_incoming_measurement)
 
         # Record new temperatures here
-        self.y = []
+        self.l = data.Logger
 
         # Plots that depend on streamed data
         self.p = plot.Manager(x_axis=conv.get_axis(DATAPOINTS_PER_GRAPH))
 
     def handle_incoming_measurement(self, measurement):
         # Log
-        pass
+        self.l.add_line(measurement)
 
         # Draw
         self.p.add_point(measurement - conv.MIN_TEMP)  # scale [0, TEMP_RANGE]

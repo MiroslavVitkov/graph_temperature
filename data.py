@@ -30,6 +30,13 @@ class Node(object):
         self.data.append(x)
 
 
+class Logger(object):
+    """Records measured data on the disc for later retrieval."""
+    def __init__(self, workdir, backupdir=None)
+    def add_line(string):
+        pass
+
+
 def main():
     pass
 
