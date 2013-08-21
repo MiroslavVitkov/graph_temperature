@@ -20,13 +20,15 @@ DATAPOINTS_PER_GRAPH = 60
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
-        self.s = dev.Simple(clb=self.handle_incoming_measurement)
+        self.s = dev.Simple(clb=self.handle_incoming_measurement)  # dummy device!!!
 
         # Record new temperatures here
-        self.l = data.Logger
+        self.l = data.Logger(workdir="~")
 
         # Plots that depend on streamed data
         self.p = plot.Manager(x_axis=conv.get_axis(DATAPOINTS_PER_GRAPH))
+        y = self.l.read(intercal_seonds=60, step_seconds=1)
+        self.p.set_yaxis(y)
 
     def handle_incoming_measurement(self, measurement):
         # Log
