@@ -27,7 +27,7 @@ class MainManager(object):
 
         # Plots that depend on streamed data
         self.p = plot.Manager(x_axis=conv.get_axis(DATAPOINTS_PER_GRAPH))
-        y = self.l.read(intercal_seonds=60, step_seconds=1)
+        y = self.l.read(interval_seconds=60, step_seconds=1)
         self.p.set_yaxis(y)
 
     def handle_incoming_measurement(self, measurement):

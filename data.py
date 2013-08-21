@@ -43,16 +43,16 @@ class Logger(object):
         # self.logfile = create/open FNAME_LOG
         pass
 
-    def add_line(string):
+    def add_line(self, string):
         # measurement = format string into one line
         # self.logfile.append(measurement)
         pass
 
     def read(self, interval_seconds, step_seconds):
-        measurement = []
+        measurements = []
         for i in range(0, interval_seconds, step_seconds):
             measurements.append(0)  # TODO
-        return measurement
+        return measurements
 
 
 def main():

@@ -25,7 +25,7 @@ class Manager(object):
         self.next_y_index = 0
         self.y_axis = [None] * self.capacity
 
-    def set_yaxis(self, y_axis):
+    def set_yaxis(self, yaxis):
         self.y_axis = yaxis
 
     def add_point(self, y):
