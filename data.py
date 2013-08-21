@@ -32,10 +32,45 @@ class Node(object):
 
 class Logger(object):
     """Records measured data on the disc for later retrieval."""
-    def __init__(self, workdir, backupdir=None)
-    def add_line(string):
+    def __init__(self, workdir, backupdir=None):
+        # fname = year_month
+        # self.curr_month
+        # create/open self.curr_file in workdir with name fname
+        # if created, write header
         pass
 
+    def add_line(string):
+        # get system time, extract month
+        # if self.curr_month != month call self.new_month
+        # regardless, write string into self.curr_file
+        pass
+
+    def begin_new_month(self):
+        """Package away the open logfile for the month,
+        archive it and open a new file.
+
+        """
+        # generate footer: averages per week and for the whole month
+        # close self.curr_file
+        # arcive and save at self.backupdir
+
+    def read_last_minute(self):
+        measurements = []
+        for i in X_MIN:
+            measurements.append(0) # read from file, if end, read from previous
+        return measurements
+
+    def read_last_hour(self)
+        measurements = []
+        for i in range(0, HOUR_TO_SECONDS, MINUTE_TO_SECONDS):
+            measurements.append(0)  # read one line in MINUTE_TO_SAMPLES
+        return measurements
+
+    def read(self, seconds_ago, seconds_increment)
+        measurement = []
+        for i in range(0, seconds_ado, seconds_increment):
+            measurements.append(0)  # TODO: read one line from file, if end, read from previous
+        return measurement
 
 def main():
     pass
