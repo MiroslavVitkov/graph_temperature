@@ -26,9 +26,10 @@ class MainManager(object):
         self.l = data.Logger(workdir="~")
 
         # Plots that depend on streamed data
-        self.p = plot.Manager(x_axis=conv.get_axis(DATAPOINTS_PER_GRAPH))
         y = self.l.read(interval_seconds=60, step_seconds=1)
-        self.p.set_yaxis(y)
+        self.p = plot.Manager(x_axis_static=conv.get_axis(DATAPOINTS_PER_GRAPH),
+                              y_axis_initial=y,
+                              )
 
     def handle_incoming_measurement(self, measurement):
         # Log
@@ -37,8 +38,6 @@ class MainManager(object):
         # Draw
         self.p.add_point(measurement - conv.MIN_TEMP)  # scale [0, TEMP_RANGE]
 
-    def handle_new_dataset(self):
-        self.p.clear()
 
 def main():
     if 0:
