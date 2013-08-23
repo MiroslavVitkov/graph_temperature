@@ -20,26 +20,39 @@ DATAPOINTS_PER_GRAPH = 60
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
-        self.s = dev.Simple(clb=self.handle_incoming_measurement)  # dummy device!!!
+        self.device = dev.Simple(clb=self.handle_incoming_measurement)  # dummy device!!!
 
         # Record new temperatures here
-        self.l = data.Logger(workdir="~")
+        self.log = data.Logger(workdir="~")
 
         # Plots that depend on streamed data
-        y = self.l.read(interval_seconds=60, step_seconds=1)
+        y = self.log.read(interval_seconds=60, step_seconds=1)
         self.p = plot.Manager(x_axis_static=conv.get_axis(DATAPOINTS_PER_GRAPH),
                               y_axis_initial=y,
                               )
 
     def handle_incoming_measurement(self, measurement):
         # Log
-        self.l.add_line(measurement)
+        self.log.add_line(measurement)
 
         # Draw
         self.p.add_point(measurement - conv.MIN_TEMP)  # scale [0, TEMP_RANGE]
 
+    def load_initial(self):
+        """After system reset, read previous logfiles and update plots.
+
+        """
+        y = self.log.read(interval_seconds=60,
+                          step_seconds=1,
+                          )
+        self.p.set_yaxis(y)
+
+    def run(self):
+        self.device.run()
+
 
 def main():
+    import time
     if 0:
         m = MainManager()
         for i in range(1, 10):
@@ -47,9 +60,19 @@ def main():
                 m.handle_incoming_measurement(j / float(i))
             m.handle_new_dataset()
 
-    if 1:
+    if 0:  # play random numbers through debug_device
         m = MainManager()
-        m.s.run()
+        m.device.run()
+
+    if 1:  # restore data from logs
+        m = MainManager()
+        while 1:
+            m.load_initial()
+            time.sleep(10)
+
+    if 0:  # Short-cirquit communication and feed plot and logs random data.
+        m = MainManager()
+        m.run()
 
 if __name__ == "__main__":
     main()

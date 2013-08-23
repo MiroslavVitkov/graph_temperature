@@ -49,6 +49,7 @@ class Logger(object):
         pass
 
     def read(self, interval_seconds, step_seconds):
+        return [10000] * interval_seconds
         measurements = []
         for i in range(0, interval_seconds, step_seconds):
             measurements.append(0)  # TODO
@@ -59,4 +60,4 @@ def main():
     pass
 
 if __name__ == "__main__":
-    main()  
+    main()

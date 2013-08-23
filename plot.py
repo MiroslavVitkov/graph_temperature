@@ -10,7 +10,7 @@ import collections as col
 
 
 WINDOW_WIDTH = 300
-WINDOW_HEIGHT = 20
+WINDOW_HEIGHT = 200
 PLOT_WIDTH = 300
 PLOT_HEIGHT = 200
 
@@ -27,10 +27,14 @@ class Manager(object):
                         x_axis=self.x_axis,
                         plot_width=PLOT_WIDTH,
                         plot_height=PLOT_HEIGHT
-                       )
+                        )
 
     def add_point(self, y):
-        self.y_axis.append(y)  # remember: circula buffer
+        self.y_axis.append(y)  # remember: circular buffer
+        self.p.update_figure(fig_number=0, y_axis=self.y_axis)
+
+    def set_yaxis(self, y_axis):
+        self.y_axis = y_axis
         self.p.update_figure(fig_number=0, y_axis=self.y_axis)
 
 
@@ -69,6 +73,7 @@ class Window(object):
                 self.plots.append(p)
 
     def update_figure(self, fig_number, y_axis):
+        print self.x_axis, y_axis
         for p in self.plots:
             p.update_figure(y_axis)
 
