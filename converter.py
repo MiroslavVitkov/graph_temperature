@@ -4,6 +4,24 @@
 
 import collections as col
 
+
+# Constants to convert time itnervals to seconds.
+# Note that these also correspond to lines in the log file.
+MINUTE_S = 60
+HOUR_S = MINUTE_S * 60
+DAY_S = HOUR_S * 24
+WEEK_S = DAY_S * 7
+MONTH_S = DAY_S * 30
+YEAR_S = DAY_S * 365
+TIME_INTERVALS = [MINUTE_S,
+                  HOUR_S,
+                  DAY_S,
+                  WEEK_S,
+                  MONTH_S,
+                  YEAR_S,
+                  ]
+
+
 MAX_TEMP = 50000
 MIN_TEMP = -20000
 TEMP_RANGE = MAX_TEMP - MIN_TEMP

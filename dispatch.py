@@ -15,6 +15,11 @@ import converter as conv
 
 
 DATAPOINTS_PER_GRAPH = 60
+WORKDIR = "~"
+BACKUPDIR = None
+PLOTS_SPECS = [dict(interval_seconds=d, step_seconds=d/DATAPOINTS_PER_GRAPH)
+               for d in conv.TIME_INTERVALS
+               ]
 
 
 class MainManager(object):
@@ -23,7 +28,7 @@ class MainManager(object):
         self.device = dev.Simple(clb=self.handle_incoming_measurement)  # dummy device!!!
 
         # Record new temperatures here
-        self.log = data.Logger(workdir="~")
+        self.log = data.Logger(workdir=WORKDIR, backupdir=BACKUPDIR)
 
         # Plots that depend on streamed data
         y = self.log.read(interval_seconds=60, step_seconds=1)
