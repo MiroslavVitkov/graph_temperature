@@ -104,12 +104,13 @@ def main():
         """Test just Graph class."""
         plt.ion()
         fig = plt.figure(figsize=(15,9))
+        temp_range = (MAX_TEMP - MIN_TEMP)
         p = Graph(window=fig, subplot_num=111,
-                  x_data=range(100), y_data=range(100)
+                  x_data=range(0, temp_range, 1000), y_data=range(0, temp_range, 1000)
                   )
         for j in range(1, 5):
             print "Runt", j
-            for i in range(1, 100):
+            for i in range(0, 32768, 1000):
                 p.add_datapoint(i)
                 fig.canvas.draw()
 
