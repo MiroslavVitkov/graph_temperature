@@ -57,12 +57,14 @@ class Window(object):
             self.plots.append(graph)
             i += 1
 
+    # Redrawing belongs here for fine control over his time-consuming operation.
+    # Note that fig.canvas.draw() redwars the wholewindow!
     def update_figure(self, plot_number, y_data):
         self.plots[fig_number].update_figure(y_data)
         self.fig.canvas.draw()
 
     def add_datapoint(self, plot_number, y):
-        self.plots[plot_number].add_datapoint(y)
+        self.plots[plot_number].add_datapoint(y - MIN_TEMP)
         self.fig.canvas.draw()
 
 
@@ -96,16 +98,23 @@ def get_screen_resolution():
     """Returns current width, height in pixels."""
     return 1366, 768
 
-def main():
-    """Unit test."""
-    if 0:
-        p = Graph(x_axis=range(100), width=640, height=480)
-        print "Graph window size is:", p.get_size()
-        for i in range(1, 100):
-            temps = [t / float(i) for t in range(100)]
-            p.update_fig(temps)
 
+def main():
     if 1:
+        """Test just Graph class."""
+        plt.ion()
+        fig = plt.figure(figsize=(15,9))
+        p = Graph(window=fig, subplot_num=111,
+                  x_data=range(100), y_data=range(100)
+                  )
+        for j in range(1, 5):
+            print "Runt", j
+            for i in range(1, 100):
+                p.add_datapoint(i)
+                fig.canvas.draw()
+
+    if 0:
+        """Test whole window."""
         import converter as conv
         import random
         DATAPOINTS_PER_GRAPH = 60
@@ -119,7 +128,7 @@ def main():
         w = Window(plots_spec=plots,
                    per_plot_width=200, per_plot_height=150
                    )
-        for i in range(1, 50):
+        for i in range(1, 5):
             print "Run", i
             for p in range(len(plots)):
                 w.add_datapoint(plot_number=p, y=random.randint(MIN_TEMP, MAX_TEMP))
