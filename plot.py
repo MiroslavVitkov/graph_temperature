@@ -7,90 +7,94 @@ Coordinates are normalized.
 
 import matplotlib.pyplot as plt
 import collections as col
-
-
-WINDOW_WIDTH = 300
-WINDOW_HEIGHT = 200
-PLOT_WIDTH = 300
-PLOT_HEIGHT = 200
-
-class Manager(object):
-    """Hold pixel data. Refresh plots when needed.
-
-    """
-    def __init__(self, x_axis_static, y_axis_initial):
-        self.x_axis = x_axis_static
-        self.y_axis = col.deque(y_axis_initial,           # circular buffer
-                                maxlen=len(x_axis_static)
-                                )
-        self.p = Window(plots_num=(3, 2),
-                        x_axis=self.x_axis,
-                        plot_width=PLOT_WIDTH,
-                        plot_height=PLOT_HEIGHT
-                        )
-
-    def add_point(self, y):
-        self.y_axis.append(y)  # remember: circular buffer
-        self.p.update_figure(fig_number=0, y_axis=self.y_axis)
-
-    def set_yaxis(self, y_axis):
-        self.y_axis = y_axis
-        self.p.update_figure(fig_number=0, y_axis=self.y_axis)
+from converter import MAX_TEMP, MIN_TEMP
 
 
 class Window(object):
-    """Hold plot objects."""
-    def __init__(self, plots_num, x_axis, plot_width, plot_height):
-        # Horizontal axis for every and all plots.
-        self.x_axis=x_axis
+    """Holds a colelction of equally-sized, static x-axis, dynamic
+     y-axis plots.
 
+    """
+    def __init__(self, plots_spec, per_plot_width, per_plot_height):
+        """plots_spec - a list of dictionaries, each describing a plot:
+            interval_s, step_s - characterize the x-axis, seconds
+            y_initial - datapoints in model coordinates (seconds)
+
+        """
         # Redraw plots as soon as self.fig.canvas.draw() is called.
         plt.ion()
 
         # Create the window surface
         dpi=80  # default value
-        size_x = (float(plot_width) / dpi) * plots_num[0]
-        size_y = (float(plot_height) / dpi) * plots_num[1]
-        self.fig = plt.figure(figsize=(size_x, size_y), dpi=dpi,  # the main window
+        screen = get_screen_resolution()
+        width = screen[0] / dpi
+        height = screen[1] / dpi
+        self.fig = plt.figure(figsize=(width, height), dpi=dpi,  # the main window
                               facecolor=None, edgecolor=None,
                               linewidth=.0, frameon=None,
                               subplotpars=None, tight_layout=None
                               )
 
         # Create the individual plots
-        def _create_plot(subplot):
-            ax = self.fig.add_subplot(subplot)
-            line, = ax.plot(self.x_axis, self.x_axis)
-            graph = Graph(y_axis=line, figure=self.fig)
-            return graph
-        assert plots_num[0] <= 9, "Number of plots must be a single digit!"
-        assert plots_num[1] <= 9, "Number of plots must be a single digit!"
         self.plots = []
-        plots_map = plots_num[0] * 100 + plots_num[1] * 10  # 990 to 110, 0 is the current plot
-        for i in range(0, plots_num[0]):
-            for j in range(1, plots_num[1] + 1):
-                p = _create_plot(plots_map + i*plots_num[1] + j)  # form the last difit i.e. current plot number
-                self.plots.append(p)
+        plots_num = len(plots_spec)
+        plots_map = plots_num * 100 + 10  # 990 to 110, 0 is the current plot
+        i = 1
+        for p in plots_spec:
+            # Construct x_axis. Pyplot normalizes (x, y).
+            # Furthermore, integers are much faster than floats.
+            # Therefore, work in the model domain:
+            # degrees Celsius * 10 ^ 3 -> maxres values
+            num_points = len(p['y_initial'])
+            temp_range = MAX_TEMP - MIN_TEMP
+            x_axis = range(0, temp_range, temp_range / num_points)
+            while len(x_axis) > num_points:
+                x_axis = x_axis[0:-1]
 
-    def update_figure(self, fig_number, y_axis):
-        print self.x_axis, y_axis
-        for p in self.plots:
-            p.update_figure(y_axis)
+            graph = Graph(window=self.fig, subplot_num=plots_map + i,  # add last digit
+                          x_data=x_axis, y_data=p['y_initial'],
+                          )
+            self.plots.append(graph)
+            i += 1
+
+    def update_figure(self, plot_number, y_data):
+        self.plots[fig_number].update_figure(y_data)
+        self.fig.canvas.draw()
+
+    def add_datapoint(self, plot_number, y):
+        self.plots[plot_number].add_datapoint(y)
+        self.fig.canvas.draw()
 
 
 class Graph(object):
     """Single 2-D dynamic plot."""
-    def __init__(self, y_axis, figure):
-        self.y_axis = y_axis
-        self.fig = figure
+    def __init__(self, window, subplot_num, x_data, y_data):
+        # Draw self
+        ax = window.add_subplot(subplot_num)
 
-    def update_figure(self, y_pixels):
-        self.y_axis.set_ydata(y_pixels)
-        self.fig.canvas.draw()
+        # Obtain handle to y-axis
+        line, = ax.plot(x_data, y_data)
+        self.y = line
 
-    def get_size(self):  # WARN: this is wrong, it returns the size of the whole window
-        f = self.fig
-        return (self.width, self.height)
+        # Remember list of datapoints
+        self.y_data = col.deque(y_data,           # circular buffer
+                                maxlen=len(x_data)
+                                )
+        self.x_data = list(x_data)
+
+    def update_figure(self, new_y_data):
+        self.y_data = new_y_data
+        self.y.set_ydata(self.y_data)  # Qt call
+
+    def add_datapoint(self, y):
+        self.y_data.append(y)  # remember - circular buffer
+        self.y.set_ydata(self.y_data)
+
+
+### General graphical utility calls. ###
+def get_screen_resolution():
+    """Returns current width, height in pixels."""
+    return 1366, 768
 
 def main():
     """Unit test."""
@@ -102,20 +106,24 @@ def main():
             p.update_fig(temps)
 
     if 1:
-        m = Manager(x_axis=range(100))
-        for i in range(1, 5):
-            print "Run", i
-            for j in range(100):
-                m.add_point(j / float(i))
-            m.clear()
+        import converter as conv
+        import random
+        DATAPOINTS_PER_GRAPH = 60
+        plots = [dict(interval_seconds=d,
+                 step_seconds=d/DATAPOINTS_PER_GRAPH,
+                 y_initial=[0,] * 97)
+                 for d in conv.TIME_INTERVALS
+                 ]
 
-    if 0:
-        m = Manager(x_axis=range(0, PLOT_WIDTH, 5))
-        print "Graph window size is:", m.p.get_size()
-        for i in range(1,5):
-            for j in range(0, PLOT_HEIGHT, 5):
-                m.add_point(j / float(i))
-            m.clear()
+
+        w = Window(plots_spec=plots,
+                   per_plot_width=200, per_plot_height=150
+                   )
+        for i in range(1, 50):
+            print "Run", i
+            for p in range(len(plots)):
+                w.add_datapoint(plot_number=p, y=random.randint(MIN_TEMP, MAX_TEMP))
+
 
 if __name__ == "__main__":
     main()
