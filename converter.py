@@ -22,6 +22,7 @@ TIME_INTERVALS = [MINUTE_S,
                   ]
 
 
+# temp_C * 10 ^ 3 -> temp_maxres
 MAX_TEMP = 50000
 MIN_TEMP = -20000
 TEMP_RANGE = MAX_TEMP - MIN_TEMP

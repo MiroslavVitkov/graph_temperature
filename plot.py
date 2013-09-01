@@ -7,12 +7,12 @@ Coordinates are normalized.
 
 import matplotlib.pyplot as plt
 import collections as col
-from converter import MAX_TEMP, MIN_TEMP
+from converter import MAX_TEMP, MIN_TEMP, TEMP_RANGE
 
 
 class Window(object):
-    """Holds a colelction of equally-sized, static x-axis, dynamic
-     y-axis plots.
+    """Holds a collection of equally-sized, static x-axis, dynamic
+     y-axis plots. Temperature range aware.
 
     """
     def __init__(self, plots_spec, per_plot_width, per_plot_height):
@@ -46,8 +46,7 @@ class Window(object):
             # Therefore, work in the model domain:
             # degrees Celsius * 10 ^ 3 -> maxres values
             num_points = len(p['y_initial'])
-            temp_range = MAX_TEMP - MIN_TEMP
-            x_axis = range(0, temp_range, temp_range / num_points)
+            x_axis = range(MIN_TEMP, MAX_TEMP, TEMP_RANGE / num_points)
             while len(x_axis) > num_points:
                 x_axis = x_axis[0:-1]
 
@@ -103,14 +102,14 @@ def main():
     if 1:
         """Test just Graph class."""
         plt.ion()
-        fig = plt.figure(figsize=(15,9))
-        temp_range = (MAX_TEMP - MIN_TEMP)
+        fig = plt.figure(figsize=(15,9)) # dpi == 80
         p = Graph(window=fig, subplot_num=111,
-                  x_data=range(0, temp_range, 1000), y_data=range(0, temp_range, 1000)
+                  x_data=range(MIN_TEMP, MAX_TEMP, 1000),
+                  y_data=range(MIN_TEMP, MAX_TEMP, 1000)
                   )
         for j in range(1, 5):
-            print "Runt", j
-            for i in range(0, 32768, 1000):
+            print "Run", j
+            for i in range(0, 32768, 1000):  # about half of the maximum
                 p.add_datapoint(i)
                 fig.canvas.draw()
 
