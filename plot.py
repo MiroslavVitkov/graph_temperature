@@ -7,6 +7,7 @@ Coordinates are normalized.
 
 import matplotlib.pyplot as plt
 import collections as col
+import numpy as np
 
 
 class Window(object):
@@ -35,11 +36,8 @@ class Window(object):
         plots_map = plots_num * 100 + 10  # 990 to 110, 0 is the current plot
         for i, p in enumerate(plots_spec):
             def get_axis(min, max, points):
-                a = range(min, max, (max - min) / points)
-                while len(a) > points:
-                    a = a[0:-1]
-                assert len(a) == points
-                return a
+                a = np.linspace(min, max, points)
+                return [int(round(f)) for f in a]
 
             x_axis = get_axis(p['x_range'][0], p['x_range'][1], p['num_points'])
             y_axis = get_axis(p['y_range'][0], p['y_range'][1], p['num_points'])
@@ -49,7 +47,7 @@ class Window(object):
             self.plots.append(graph)
 
     # Redrawing belongs here for fine control over this time-consuming operation.
-    # Note that fig.canvas.draw() redwars the wholewindow!
+    # Note that fig.canvas.draw() redraws the whole window!
     def update_figure(self, plot_number, y_data):
         self.plots[fig_number].update_figure(y_data)
         self.fig.canvas.draw()
@@ -111,7 +109,8 @@ def main():
         """Test whole window."""
         import converter as conv
         import random
-        DATAPOINTS_PER_GRAPH = 60
+        print conv.TIME_INTERVALS
+        DATAPOINTS_PER_GRAPH = 200
         PLOTS_SPEC = [dict(x_range=(0, d),
                            y_range=(MIN_TEMP, MAX_TEMP),
                            num_points=DATAPOINTS_PER_GRAPH)
