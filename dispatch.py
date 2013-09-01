@@ -17,9 +17,11 @@ import converter as conv
 DATAPOINTS_PER_GRAPH = 60
 WORKDIR = "~"
 BACKUPDIR = None
-PLOTS_SPECS = [dict(interval_seconds=d, step_seconds=d/DATAPOINTS_PER_GRAPH)
-               for d in conv.TIME_INTERVALS
-               ]
+PLOTS_SPEC = [dict(x_range=(0, d),
+                   y_range=(conv.MIN_TEMP, conv.MAX_TEMP),
+                   num_points=DATAPOINTS_PER_GRAPH)
+              for d in conv.TIME_INTERVALS
+              ]
 
 
 class MainManager(object):
@@ -31,17 +33,14 @@ class MainManager(object):
         self.log = data.Logger(workdir=WORKDIR, backupdir=BACKUPDIR)
 
         # Plots that depend on streamed data
-        y = self.log.read(interval_seconds=60, step_seconds=1)
-        self.p = plot.Manager(x_axis_static=conv.get_axis(DATAPOINTS_PER_GRAPH),
-                              y_axis_initial=y,
-                              )
+        self.plots = plot.Window(plots_spec=PLOTS_SPEC)
 
     def handle_incoming_measurement(self, measurement):
         # Log
         self.log.add_line(measurement)
 
         # Draw
-        self.p.add_point(measurement - conv.MIN_TEMP)  # scale [0, TEMP_RANGE]
+        self.plots[0].add_point(measurement)  # one minute plot
 
     def load_initial(self):
         """After system reset, read previous logfiles and update plots.
@@ -50,7 +49,7 @@ class MainManager(object):
         y = self.log.read(interval_seconds=60,
                           step_seconds=1,
                           )
-        self.p.set_yaxis(y)
+        self.plots[0].set_yaxis(y)
 
     def run(self):
         self.device.run()
