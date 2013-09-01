@@ -12,15 +12,11 @@ from converter import MAX_TEMP, MIN_TEMP, TEMP_RANGE
 
 class Window(object):
     """Holds a collection of equally-sized, static x-axis, dynamic
-     y-axis plots. Temperature range aware.
+     y-axis plots. Temperature range aware. Takes up the whole screen.
 
     """
-    def __init__(self, plots_spec, per_plot_width, per_plot_height):
-        """plots_spec - a list of dictionaries, each describing a plot:
-            interval_s, step_s - characterize the x-axis, seconds
-            y_initial - datapoints in model coordinates (seconds)
-
-        """
+    def __init__(self, y_initial_per_plot):
+        """y_initial_per_plot - a list of lists of y coordinates"""
         # Redraw plots as soon as self.fig.canvas.draw() is called.
         plt.ion()
 
@@ -37,33 +33,31 @@ class Window(object):
 
         # Create the individual plots
         self.plots = []
-        plots_num = len(plots_spec)
+        plots_num = len(y_initial_per_plot)
         plots_map = plots_num * 100 + 10  # 990 to 110, 0 is the current plot
-        i = 1
-        for p in plots_spec:
+        for i, p in enumerate(y_initial_per_plot):
             # Construct x_axis. Pyplot normalizes (x, y).
             # Furthermore, integers are much faster than floats.
             # Therefore, work in the model domain:
             # degrees Celsius * 10 ^ 3 -> maxres values
-            num_points = len(p['y_initial'])
+            num_points = len(p)
             x_axis = range(MIN_TEMP, MAX_TEMP, TEMP_RANGE / num_points)
             while len(x_axis) > num_points:
                 x_axis = x_axis[0:-1]
 
-            graph = Graph(window=self.fig, subplot_num=plots_map + i,  # add last digit
-                          x_data=x_axis, y_data=p['y_initial'],
+            graph = Graph(window=self.fig, subplot_num=plots_map + i + 1,  # add last digit
+                          x_data=x_axis, y_data=p,
                           )
             self.plots.append(graph)
-            i += 1
 
-    # Redrawing belongs here for fine control over his time-consuming operation.
+    # Redrawing belongs here for fine control over this time-consuming operation.
     # Note that fig.canvas.draw() redwars the wholewindow!
     def update_figure(self, plot_number, y_data):
         self.plots[fig_number].update_figure(y_data)
         self.fig.canvas.draw()
 
     def add_datapoint(self, plot_number, y):
-        self.plots[plot_number].add_datapoint(y - MIN_TEMP)
+        self.plots[plot_number].add_datapoint(y)
         self.fig.canvas.draw()
 
 
@@ -99,7 +93,7 @@ def get_screen_resolution():
 
 
 def main():
-    if 1:
+    if 0:
         """Test just Graph class."""
         plt.ion()
         fig = plt.figure(figsize=(15,9)) # dpi == 80
@@ -113,25 +107,24 @@ def main():
                 p.add_datapoint(i)
                 fig.canvas.draw()
 
-    if 0:
+    if 1:
         """Test whole window."""
         import converter as conv
         import random
         DATAPOINTS_PER_GRAPH = 60
-        plots = [dict(interval_seconds=d,
-                 step_seconds=d/DATAPOINTS_PER_GRAPH,
-                 y_initial=[0,] * 97)
-                 for d in conv.TIME_INTERVALS
-                 ]
+        #plots = [dict(interval_s=d,
+        #         step_s=d/DATAPOINTS_PER_GRAPH,
+        #         y_initial=[0,] * 97)
+        #         for d in conv.TIME_INTERVALS
+        #         ]
+        plots = [[30000,]*60,]
 
-
-        w = Window(plots_spec=plots,
-                   per_plot_width=200, per_plot_height=150
-                   )
-        for i in range(1, 5):
+        w = Window(y_initial_per_plot=plots)
+        for i in range(1, 10):
             print "Run", i
             for p in range(len(plots)):
-                w.add_datapoint(plot_number=p, y=random.randint(MIN_TEMP, MAX_TEMP))
+                w.add_datapoint(plot_number=p,
+                                y=random.randint(MIN_TEMP, MAX_TEMP))
 
 
 if __name__ == "__main__":
