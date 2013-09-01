@@ -49,7 +49,7 @@ class Window(object):
     # Redrawing belongs here for fine control over this time-consuming operation.
     # Note that fig.canvas.draw() redraws the whole window!
     def update_figure(self, plot_number, y_data):
-        self.plots[fig_number].update_figure(y_data)
+        self.plots[plot_number].update_figure(y_data)
         self.fig.canvas.draw()
 
     def add_datapoint(self, plot_number, y):

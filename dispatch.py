@@ -49,7 +49,7 @@ class MainManager(object):
         y = self.log.read(interval_seconds=60,
                           step_seconds=1,
                           )
-        self.plots[0].set_yaxis(y)
+        self.plots.update_figure(plot_number=0, y_data=y)
 
     def run(self):
         self.device.run()
