@@ -40,7 +40,9 @@ class MainManager(object):
         self.log.add_line(measurement)
 
         # Draw
-        self.plots[0].add_point(measurement)  # one minute plot
+        self.plots.add_datapoint(plot_number=0,
+                                 y=measurement,
+                                 )
 
     def load_initial(self):
         """After system reset, read previous logfiles and update plots.
@@ -56,27 +58,15 @@ class MainManager(object):
 
 
 def main():
-    import time
-    if 0:
-        m = MainManager()
-        for i in range(1, 10):
-            for j in range(0, 60):
-                m.handle_incoming_measurement(j / float(i))
-            m.handle_new_dataset()
-
-    if 0:  # play random numbers through debug_device
+    if 1:  # play random numbers through debug_device
         m = MainManager()
         m.device.run()
 
-    if 1:  # restore data from logs
+    if 0:  # restore data from logs
+        import time
         m = MainManager()
-        while 1:
-            m.load_initial()
-            time.sleep(10)
-
-    if 0:  # Short-cirquit communication and feed plot and logs random data.
-        m = MainManager()
-        m.run()
+        m.load_initial()
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
