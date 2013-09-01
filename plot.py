@@ -7,7 +7,6 @@ Coordinates are normalized.
 
 import matplotlib.pyplot as plt
 import collections as col
-from converter import MAX_TEMP, MIN_TEMP, TEMP_RANGE
 
 
 class Window(object):
@@ -15,8 +14,11 @@ class Window(object):
      y-axis plots. Temperature range aware. Takes up the whole screen.
 
     """
-    def __init__(self, y_initial_per_plot):
-        """y_initial_per_plot - a list of lists of y coordinates"""
+    def __init__(self, plots_spec):
+        """plots_spec - list of dicts:
+            x_range, y_range, num_points
+
+        """
         # Redraw plots as soon as self.fig.canvas.draw() is called.
         plt.ion()
 
@@ -25,28 +27,24 @@ class Window(object):
         screen = get_screen_resolution()
         width = screen[0] / dpi
         height = screen[1] / dpi
-        self.fig = plt.figure(figsize=(width, height), dpi=dpi,  # the main window
-                              facecolor=None, edgecolor=None,
-                              linewidth=.0, frameon=None,
-                              subplotpars=None, tight_layout=None
-                              )
+        self.fig = plt.figure(figsize=(width, height), dpi=dpi)  # the main window
 
         # Create the individual plots
         self.plots = []
-        plots_num = len(y_initial_per_plot)
+        plots_num = len(plots_spec)
         plots_map = plots_num * 100 + 10  # 990 to 110, 0 is the current plot
-        for i, p in enumerate(y_initial_per_plot):
-            # Construct x_axis. Pyplot normalizes (x, y).
-            # Furthermore, integers are much faster than floats.
-            # Therefore, work in the model domain:
-            # degrees Celsius * 10 ^ 3 -> maxres values
-            num_points = len(p)
-            x_axis = range(MIN_TEMP, MAX_TEMP, TEMP_RANGE / num_points)
-            while len(x_axis) > num_points:
-                x_axis = x_axis[0:-1]
+        for i, p in enumerate(plots_spec):
+            def get_axis(min, max, points):
+                a = range(min, max, (max - min) / points)
+                while len(a) > points:
+                    a = a[0:-1]
+                assert len(a) == points
+                return a
 
+            x_axis = get_axis(p['x_range'][0], p['x_range'][1], p['num_points'])
+            y_axis = get_axis(p['y_range'][0], p['y_range'][1], p['num_points'])
             graph = Graph(window=self.fig, subplot_num=plots_map + i + 1,  # add last digit
-                          x_data=x_axis, y_data=p,
+                          x_axis=x_axis, y_axis=y_axis,
                           )
             self.plots.append(graph)
 
@@ -62,20 +60,21 @@ class Window(object):
 
 
 class Graph(object):
-    """Single 2-D dynamic plot."""
-    def __init__(self, window, subplot_num, x_data, y_data):
+    """Single 2-D dynamic plot. The axes must be same length and
+    have both minimum and maximum possible values.
+
+    """
+    def __init__(self, window, subplot_num, x_axis, y_axis):
         # Draw self
         ax = window.add_subplot(subplot_num)
 
         # Obtain handle to y-axis
-        line, = ax.plot(x_data, y_data)
+        line, = ax.plot(x_axis, y_axis) # set here axis ranges
         self.y = line
 
         # Remember list of datapoints
-        self.y_data = col.deque(y_data,           # circular buffer
-                                maxlen=len(x_data)
-                                )
-        self.x_data = list(x_data)
+        self.y_data = col.deque(y_axis,
+                                maxlen=len(y_axis))  # circular buffer
 
     def update_figure(self, new_y_data):
         self.y_data = new_y_data
@@ -93,13 +92,14 @@ def get_screen_resolution():
 
 
 def main():
+    from converter import MAX_TEMP, MIN_TEMP
     if 0:
         """Test just Graph class."""
         plt.ion()
         fig = plt.figure(figsize=(15,9)) # dpi == 80
         p = Graph(window=fig, subplot_num=111,
-                  x_data=range(MIN_TEMP, MAX_TEMP, 1000),
-                  y_data=range(MIN_TEMP, MAX_TEMP, 1000)
+                  x_axis=range(MIN_TEMP, MAX_TEMP, 1000),
+                  y_axis=range(MIN_TEMP, MAX_TEMP, 1000),
                   )
         for j in range(1, 5):
             print "Run", j
@@ -112,17 +112,16 @@ def main():
         import converter as conv
         import random
         DATAPOINTS_PER_GRAPH = 60
-        #plots = [dict(interval_s=d,
-        #         step_s=d/DATAPOINTS_PER_GRAPH,
-        #         y_initial=[0,] * 97)
-        #         for d in conv.TIME_INTERVALS
-        #         ]
-        plots = [[30000,]*60,]
+        PLOTS_SPEC = [dict(x_range=(0, d),
+                           y_range=(MIN_TEMP, MAX_TEMP),
+                           num_points=DATAPOINTS_PER_GRAPH)
+                      for d in conv.TIME_INTERVALS
+                      ]
 
-        w = Window(y_initial_per_plot=plots)
+        w = Window(plots_spec=PLOTS_SPEC)
         for i in range(1, 10):
             print "Run", i
-            for p in range(len(plots)):
+            for p in range(len(PLOTS_SPEC)):
                 w.add_datapoint(plot_number=p,
                                 y=random.randint(MIN_TEMP, MAX_TEMP))
 
