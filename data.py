@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 """Holds static x-axes for different ranges, as well as all the accumulated temperature data ever."""
 
 FNAME_LOG = "temperature_measurements.log"

@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 """Parse string from the device to numbers and vice versa.
 

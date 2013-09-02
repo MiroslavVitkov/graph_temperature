@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 """Handle serial communication with the device and do callbacks.
 

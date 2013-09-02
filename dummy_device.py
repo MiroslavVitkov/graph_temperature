@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 """Output a number between 50.000 and -30.000 every second.
 Pass a callback to MainManager

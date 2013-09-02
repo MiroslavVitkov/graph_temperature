@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 """Construct a visible plot, connecting the given set of points.
 Coordinates are normalized.

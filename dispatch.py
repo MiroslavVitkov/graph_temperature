@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 """Device -> hw_comm -> dispatch -> parse_com -> convert -> plot
                                  -> log

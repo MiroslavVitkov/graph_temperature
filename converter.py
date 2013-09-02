@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 """Convert between model coordinates(time, temperature) and view coordinates(pixels, pixels)."""
 
