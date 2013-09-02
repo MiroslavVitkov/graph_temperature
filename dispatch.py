@@ -8,7 +8,7 @@ Update week, month and year plots every day.
 
 """
 
-import dummy_device as dev
+import hw_comm as dev
 import plot
 import data
 import converter as conv
