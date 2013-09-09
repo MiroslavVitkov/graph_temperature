@@ -12,6 +12,7 @@ import hw_comm as dev
 import plot
 import data
 import converter as conv
+import threading
 
 
 DATAPOINTS_PER_GRAPH = 60
@@ -27,7 +28,7 @@ PLOTS_SPEC = [dict(x_range=(0, d),
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
-        self.device = dev.Serial(clb=self.handle_incoming_measurement)  # dummy device!!!
+        self.device = dev.Serial(clb=self.handle_incoming_measurement)  # TODO: thread
 
         # Record new temperatures here
         self.log = data.Logger(workdir=WORKDIR, backupdir=BACKUPDIR)
@@ -35,8 +36,8 @@ class MainManager(object):
         # Plots that depend on streamed data
         self.plots = plot.Window(plots_spec=PLOTS_SPEC)
 
-        # Just do it!
-        self.device.run()
+        # Time-consuming setup done. Lounch program loop!
+        self.device.run()  # blocking!
 
     def handle_incoming_measurement(self, measurement):
         # Log
