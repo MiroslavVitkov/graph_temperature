@@ -27,13 +27,16 @@ PLOTS_SPEC = [dict(x_range=(0, d),
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
-        self.device = dev.Simple(clb=self.handle_incoming_measurement)  # dummy device!!!
+        self.device = dev.Serial(clb=self.handle_incoming_measurement)  # dummy device!!!
 
         # Record new temperatures here
         self.log = data.Logger(workdir=WORKDIR, backupdir=BACKUPDIR)
 
         # Plots that depend on streamed data
         self.plots = plot.Window(plots_spec=PLOTS_SPEC)
+
+        # Just do it!
+        self.device.run()
 
     def handle_incoming_measurement(self, measurement):
         # Log
