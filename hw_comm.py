@@ -12,11 +12,13 @@ class Serial(object):
     def __init__(self, clb):
         self.clb = clb  # callback for new available measurement
         self.comm = serial.Serial(port='/dev/ttyUSB0',
-                                  baudrate=9600,
+                                  baudrate=9600,  # 115200 is highest standard
                                   bytesize=serial.EIGHTBITS,
                                   parity=serial.PARITY_NONE,
                                   stopbits=serial.STOPBITS_ONE,
-                                  timeout=None,
+                                  timeout=None,  # None==forever,
+                                                 # 0=non-blocking,
+                                                 # foat=seconds
                                   xonxoff=False,  # sw flow control
                                   rtscts=False,  # hw flow control
                                   writeTimeout=None,
