@@ -45,8 +45,9 @@ class MainManager(object):
         self.log.add_line(measurement)
 
         # Draw
+        parsed_measurement = 1000
         self.plots.add_datapoint(plot_number=0,
-                                 y=measurement,
+                                 y=parsed_measurement,
                                  )
 
     def load_initial(self):
@@ -59,8 +60,6 @@ class MainManager(object):
         self.plots.update_figure(plot_number=0, y_data=y)
 
     def run(self):
-        while True:
-            self.log.add_line("Hello!\n")
         self.device_thread.start()
 
 

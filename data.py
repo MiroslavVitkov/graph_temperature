@@ -18,7 +18,7 @@ class Logger(object):
         self.logfile.write(string)
 
     def read(self, interval_seconds, step_seconds):
-        return [10000] * interval_seconds
+        return "Hello world!\n"
         measurements = []
         for i in range(0, interval_seconds, step_seconds):
             measurements.append(0)  # TODO

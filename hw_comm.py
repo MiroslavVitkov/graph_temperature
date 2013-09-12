@@ -29,10 +29,15 @@ class Serial(object):
     def listen_forever(self):
         """Blocking! Forever!"""
         while True:
-            #measurement = self.comm.readline()
-            import random
-            measurement = random.randint(-30000, 50000)
+            measurement = self.comm.readline()
             self.clb(measurement)
+          
+    def _generate_random_data(self):
+        """For debug purposes."""
+            import random
+            while True:
+                measurement = str(random.randint(-30000, 50000)) + "\n"
+                self.clb(measurement)
 
     def read_line(self):
         """Blocks until newline is received."""
