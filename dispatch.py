@@ -28,7 +28,10 @@ PLOTS_SPEC = [dict(x_range=(0, d),
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
-        self.device = dev.Serial(clb=self.handle_incoming_measurement)  # TODO: thread
+        def listen_to_port():
+            device = dev.Serial(clb=self.handle_incoming_measurement)
+            device.listen_forever()
+        self.device_thread = threading.Thread(target=listen_to_port, args=(), kwargs={})
 
         # Record new temperatures here
         self.log = data.Logger(workdir=WORKDIR, backupdir=BACKUPDIR)
@@ -37,7 +40,7 @@ class MainManager(object):
         self.plots = plot.Window(plots_spec=PLOTS_SPEC)
 
         # Time-consuming setup done. Lounch program loop!
-        self.device.run()  # blocking!
+        #self.device_thread.run()  # blocking!
 
     def handle_incoming_measurement(self, measurement):
         # Log
@@ -58,13 +61,13 @@ class MainManager(object):
         self.plots.update_figure(plot_number=0, y_data=y)
 
     def run(self):
-        self.device.run()
+        self.device_thread.start()
 
 
 def main():
     if 1:  # play random numbers through debug_device
         m = MainManager()
-        m.device.run()
+        m.run()
 
     if 0:  # restore data from logs
         import time

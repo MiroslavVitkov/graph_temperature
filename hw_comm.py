@@ -21,24 +21,23 @@ class Serial(object):
                                                  # foat=seconds
                                   xonxoff=False,  # sw flow control
                                   rtscts=False,  # hw flow control
-                                  writeTimeout=None,
+                                  writeTimeout=None,  # see 'timeout'
                                   dsrdtr=False,  # hw flow control
                                   interCharTimeout=None,
                                   )
 
-    def run(self):
+    def listen_forever(self):
+        """Blocking! Forever!"""
         while True:
-            print "yey"
+            #measurement = self.comm.readline()
             import random
-            measurement = random.randint(-20000, 50000)
-            #measurement = self.comm.readline()  # blocking
+            measurement = random.randint(-30000, 50000)
+            print measurement
             self.clb(measurement)
 
     def read_line(self):
-        self.comm.read()
-
-    def write(self, string, newline=True):
-        comm.write(string)
+        """Blocks until newline is received."""
+        self.comm.readline()
 
 
 def main():
