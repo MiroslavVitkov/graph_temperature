@@ -12,8 +12,7 @@ class Logger(object):
     previous archives being deleted.
     """
     def __init__(self, workdir, backupdir=None, backup_interval=None):
-        self.logfile = open('/'.join((workdir, FNAME_LOG)), 'a+')
-        pass
+        self.logfile = open('/'.join((workdir, FNAME_LOG)), 'a')
 
     def add_line(self, string):
         self.logfile.write(string)

@@ -32,7 +32,6 @@ class Serial(object):
             #measurement = self.comm.readline()
             import random
             measurement = random.randint(-30000, 50000)
-            print measurement
             self.clb(measurement)
 
     def read_line(self):

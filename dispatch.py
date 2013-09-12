@@ -13,10 +13,11 @@ import plot
 import data
 import converter as conv
 import threading
+from os.path import expanduser  # find $HOME on any OS
 
 
 DATAPOINTS_PER_GRAPH = 60
-WORKDIR = "~"
+WORKDIR = expanduser('~')
 BACKUPDIR = None
 PLOTS_SPEC = [dict(x_range=(0, d),
                    y_range=(conv.MIN_TEMP, conv.MAX_TEMP),
@@ -39,9 +40,6 @@ class MainManager(object):
         # Plots that depend on streamed data
         self.plots = plot.Window(plots_spec=PLOTS_SPEC)
 
-        # Time-consuming setup done. Lounch program loop!
-        #self.device_thread.run()  # blocking!
-
     def handle_incoming_measurement(self, measurement):
         # Log
         self.log.add_line(measurement)
@@ -61,6 +59,8 @@ class MainManager(object):
         self.plots.update_figure(plot_number=0, y_data=y)
 
     def run(self):
+        while True:
+            self.log.add_line("Hello!\n")
         self.device_thread.start()
 
 
