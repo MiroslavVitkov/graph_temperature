@@ -48,7 +48,8 @@ class MainManager(object):
         self.log.add_line(measurement)
 
         # Draw
-        parsed_measurement = 1000
+        import random
+        parsed_measurement = random.randint(-30000, 50000)
         self.plots.add_datapoint(plot_number=0,
                                  y=parsed_measurement,
                                  )
