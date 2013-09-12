@@ -12,13 +12,11 @@ class Logger(object):
     previous archives being deleted.
     """
     def __init__(self, workdir, backupdir=None, backup_interval=None):
-        # self.logfile = create/open FNAME_LOG
+        self.logfile = open('/'.join((workdir, FNAME_LOG)), 'a+')
         pass
 
     def add_line(self, string):
-        # measurement = format string into one line
-        # self.logfile.append(measurement)
-        pass
+        self.logfile.write(string)
 
     def read(self, interval_seconds, step_seconds):
         return [10000] * interval_seconds
@@ -29,7 +27,10 @@ class Logger(object):
 
 
 def main():
-    pass
+    from os.path import expanduser  # find $HOME on any OS
+    l = Logger(workdir=expanduser('~'))
+    for i in range(10):
+        l.add_line("Hqlqlq\n")
 
 if __name__ == "__main__":
     main()
