@@ -34,10 +34,10 @@ class Serial(object):
           
     def _generate_random_data(self):
         """For debug purposes."""
-            import random
-            while True:
-                measurement = str(random.randint(-30000, 50000)) + "\n"
-                self.clb(measurement)
+        import random
+        while True:
+            measurement = str(random.randint(-30000, 50000)) + "\n"
+            self.clb(measurement)
 
     def read_line(self):
         """Blocks until newline is received."""

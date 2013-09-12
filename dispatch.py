@@ -29,9 +29,12 @@ PLOTS_SPEC = [dict(x_range=(0, d),
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
+        # The device is passed a callback function. Calling it is the engine of the 
+        # whole program.
         def listen_to_port():
             device = dev.Serial(clb=self.handle_incoming_measurement)
-            device.listen_forever()
+            #device.listen_forever()  # TODO: uncomment for production code
+            device._generate_random_data()
         self.device_thread = threading.Thread(target=listen_to_port, args=(), kwargs={})
 
         # Record new temperatures here
