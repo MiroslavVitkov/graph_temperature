@@ -33,7 +33,8 @@ class Window(object):
         # Create the individual plots
         self.plots = []
         plots_num = len(plots_spec)
-        plots_map = plots_num * 100 + 10  # 990 to 110, 0 is the current plot
+        half = plots_num / 2
+        plots_map = half * 100 +  (plots_num - half) * 10  # 990 to 110, 0 is the current plot
         for i, p in enumerate(plots_spec):
             def get_axis(min, max, points):
                 a = np.linspace(min, max, points)
