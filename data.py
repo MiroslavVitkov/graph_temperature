@@ -12,13 +12,16 @@ class Logger(object):
     previous archives being deleted.
     """
     def __init__(self, workdir, backupdir=None, backup_interval=None):
-        self.logfile = open('/'.join((workdir, FNAME_LOG)), 'a')
+        self.logfile = open('/'.join((workdir, FNAME_LOG)), 'a+')
 
     def add_line(self, string):
         self.logfile.write(string)
 
     def read(self, interval_seconds, step_seconds):
-        return "Hello world!\n"
+        # TODO
+        # NOTE: do not read all in once, parse the data on the way
+        # NOTE: guard against absurdly large requests not ot cause memory overflow
+        # NOTE: guard against end of file
         measurements = []
         for i in range(0, interval_seconds, step_seconds):
             measurements.append(0)  # TODO
