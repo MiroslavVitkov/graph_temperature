@@ -1,36 +1,54 @@
 #!/usr/bin/env python
 
-"""Device -> hw_comm -> dispatch -> parse_com -> convert -> plot
+"""Device -> hw_comm -> dispatch -> plot
                                  -> log
 
-Update minute, hour and day plots every second.
-Update week, month and year plots every day.
+Update minute, hour, day, week, month and year plots.
 
 """
 
 import hw_comm as dev
 import plot
 import data
-import converter as conv
 import threading
 from os.path import expanduser  # find $HOME on any OS
 
 
-DATAPOINTS_PER_GRAPH = 60
+# Logging settings
 WORKDIR = expanduser('~')
 BACKUPDIR = None
+
+# Plotting settings
+MINUTE_S = 60
+HOUR_S = MINUTE_S * 60
+DAY_S = HOUR_S * 24
+WEEK_S = DAY_S * 7
+MONTH_S = DAY_S * 30
+YEAR_S = DAY_S * 365
+TIME_INTERVALS = [MINUTE_S,
+                  HOUR_S,
+                  DAY_S,
+                  WEEK_S,
+                  MONTH_S,
+                  YEAR_S,
+                  ]
+
+# temp_C * 10 ^ 3 -> temp_maxres
+MAX_TEMP = 50000
+MIN_TEMP = -30000
+TEMP_RANGE = MAX_TEMP - MIN_TEMP
+
+DATAPOINTS_PER_GRAPH = 60
 PLOTS_SPEC = [dict(x_range=(0, d),
-                   y_range=(conv.MIN_TEMP, conv.MAX_TEMP),
+                   y_range=(MIN_TEMP, MAX_TEMP),
                    num_points=DATAPOINTS_PER_GRAPH)
-              for d in conv.TIME_INTERVALS
+              for d in TIME_INTERVALS
               ]
 
 
 class MainManager(object):
     def __init__(self):
         # Initialize device communication
-        # The device is passed a callback function. Calling it is the engine of the 
-        # whole program.
         def listen_to_port():
             device = dev.Serial(clb=self.handle_incoming_measurement)
             #device.listen_forever()  # TODO: uncomment for production code
@@ -43,14 +61,23 @@ class MainManager(object):
         # Plots that depend on streamed data
         self.plots = plot.Window(plots_spec=PLOTS_SPEC)
 
+        # Scratchpad
+        self._counter_samples = 0
+
     def handle_incoming_measurement(self, measurement):
         # Log
         self.log.add_line(measurement)
 
         # Draw
+        # 1. parse
         import random
         parsed_measurement = random.randint(-30000, 50000)
-        self.plots.add_datapoint(plot_number=0,
+
+        # 2. update corresponding plots
+        self._counter_samples += 1
+        for p, v in enumerate(TIME_INTERVALS):
+            if self._counter_samples % v == 0:
+                self.plots.add_datapoint(plot_number=p,
                                  y=parsed_measurement,
                                  )
 
