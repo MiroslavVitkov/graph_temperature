@@ -91,7 +91,7 @@ def get_screen_resolution():
 
 
 def main():
-    from converter import MAX_TEMP, MIN_TEMP
+    from dispatch import MAX_TEMP, MIN_TEMP
     if 0:
         """Test just Graph class."""
         plt.ion()
@@ -108,7 +108,7 @@ def main():
 
     if 1:
         """Test whole window."""
-        import converter as conv
+        import dispatch as conv
         import random
         print conv.TIME_INTERVALS
         DATAPOINTS_PER_GRAPH = 200
