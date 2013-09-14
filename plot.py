@@ -1,13 +1,21 @@
 #!/usr/bin/env python
 
 """Construct a visible plot, connecting the given set of points.
-Coordinates are normalized.
+Coordinates are normalized. TODO: reallly?
 
 """
 
 import matplotlib.pyplot as plt
 import collections as col
 import numpy as np
+
+
+class Demuxer(object):
+    def __init__(object, plots):
+        pass
+
+    def handle_new_value(self, val):
+        pass
 
 
 class Window(object):
@@ -56,6 +64,9 @@ class Window(object):
     def add_datapoint(self, plot_number, y):
         self.plots[plot_number].add_datapoint(y)
         self.fig.canvas.draw()
+
+    def get_yaxis(self, plot_num):
+        pass
 
 
 class Graph(object):
