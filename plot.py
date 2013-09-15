@@ -11,11 +11,19 @@ import numpy as np
 
 
 class Demuxer(object):
-    def __init__(object, plots):
-        pass
+    def __init__(self, plots_spec):
+        self.w = Window(plots_spec=plots_spec)
+        self._counter_samples = 0
 
     def handle_new_value(self, val):
-        pass
+        """Update relevant plots."""
+        self._counter_samples += 1
+        from dispatch import TIME_INTERVALS
+        for i, v in enumerate(TIME_INTERVALS):
+            if self._counter_samples % v == 0:
+                self.w.add_datapoint(plot_number=i,
+                                     y=val,
+                                     )
 
 
 class Window(object):
@@ -66,7 +74,7 @@ class Window(object):
         self.fig.canvas.draw()
 
     def get_yaxis(self, plot_num):
-        pass
+        self.plots[plot_num].y_data
 
 
 class Graph(object):

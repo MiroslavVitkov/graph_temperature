@@ -59,10 +59,7 @@ class MainManager(object):
         self.log = data.Logger(workdir=WORKDIR, backupdir=BACKUPDIR)
 
         # Plots that depend on streamed data
-        self.plots = plot.Window(plots_spec=PLOTS_SPEC)
-
-        # Scratchpad
-        self._counter_samples = 0
+        self.plots = plot.Demuxer(plots_spec=PLOTS_SPEC)
 
     def handle_incoming_measurement(self, measurement):
         # Log
@@ -74,12 +71,7 @@ class MainManager(object):
         parsed_measurement = random.randint(-30000, 50000)
 
         # 2. update corresponding plots
-        self._counter_samples += 1
-        for p, v in enumerate(TIME_INTERVALS):
-            if self._counter_samples % v == 0:
-                self.plots.add_datapoint(plot_number=p,
-                                 y=parsed_measurement,
-                                 )
+        self.plots.handle_new_value(parsed_measurement)
 
     def load_initial(self):
         """After system reset, read previous logfiles and update plots.
