@@ -35,8 +35,6 @@ class Demuxer(object):
 
     def _get_average(self, plot_num):
         data = self.w.get_yaxis(plot_num=plot_num)
-        print type(data)
-        print data
         average = np.mean(data)
         return average
 
@@ -108,9 +106,13 @@ class Graph(object):
         self.y_data = col.deque(y_axis,
                                 maxlen=len(y_axis))  # circular buffer
 
+        # Make plot prettier
+        plt.grid(True)
+        plt.tight_layout()
+
     def update_figure(self, new_y_data):
         self.y_data = new_y_data
-        self.y.set_ydata(self.y_data)  # Qt call
+        self.y.set_ydata(self.y_data)  # pyPlot call
 
     def add_datapoint(self, y):
         self.y_data.append(y)  # remember - circular buffer

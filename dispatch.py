@@ -51,8 +51,8 @@ class MainManager(object):
         # Initialize device communication
         def listen_to_port():
             device = dev.Serial(clb=self.handle_incoming_measurement)
-            #device.listen_forever()  # TODO: uncomment for production code
-            device._generate_random_data()
+            # device._generate_random_data()  # dummy device
+            device.listen_forever()
         self.device_thread = threading.Thread(target=listen_to_port, args=(), kwargs={})
 
         # Record new temperatures here
@@ -67,8 +67,9 @@ class MainManager(object):
 
         # Draw
         # 1. parse
-        import random
-        parsed_measurement = random.randint(-30000, 50000)
+        parsed_measurement = NOT IMPLEMENTED YET
+        # import random  # dummy
+        # parsed_measurement = random.randint(-30000, 50000)
 
         # 2. update corresponding plots
         self.plots.handle_new_value(parsed_measurement)
@@ -77,6 +78,7 @@ class MainManager(object):
         """After system reset, read previous logfiles and update plots.
 
         """
+        THIS FUNCTION IS NOT PROPERLY IMPLEMENTED YET
         y = self.log.read(interval_seconds=60,
                           step_seconds=1,
                           )

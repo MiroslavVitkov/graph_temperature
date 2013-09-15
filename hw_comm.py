@@ -31,7 +31,7 @@ class Serial(object):
         while True:
             measurement = self.comm.readline()
             self.clb(measurement)
-          
+
     def _generate_random_data(self):
         """For debug purposes."""
         import random
