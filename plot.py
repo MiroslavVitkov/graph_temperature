@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 
-"""Construct a visible plot, connecting the given set of points.
-Coordinates are normalized. TODO: reallly?
+"""A colelction of classes for high-quality, dynamically
+updated XY-plots.
 
 """
 
+# Generic imports
 import matplotlib.pyplot as plt
 import collections as col
 import numpy as np
 
+# Assignment specific imports
+from dispatch import TIME_INTERVALS, MINUTE_S
+
 
 class Demuxer(object):
+    """This class is assignment-specific."""
     def __init__(self, plots_spec):
         self.w = Window(plots_spec=plots_spec)
         self._counter_samples = 0
@@ -18,13 +23,22 @@ class Demuxer(object):
     def handle_new_value(self, val):
         """Update relevant plots."""
         self._counter_samples += 1
-        from dispatch import TIME_INTERVALS
         for i, v in enumerate(TIME_INTERVALS):
             if self._counter_samples % v == 0:
+                if v == MINUTE_S:
+                    val = val
+                else:
+                    val = self._get_average(plot_num=i-1)
                 self.w.add_datapoint(plot_number=i,
                                      y=val,
                                      )
 
+    def _get_average(self, plot_num):
+        data = self.w.get_yaxis(plot_num=plot_num)
+        print type(data)
+        print data
+        average = np.mean(data)
+        return average
 
 class Window(object):
     """Holds a collection of equally-sized, static x-axis, dynamic
@@ -74,7 +88,7 @@ class Window(object):
         self.fig.canvas.draw()
 
     def get_yaxis(self, plot_num):
-        self.plots[plot_num].y_data
+        return self.plots[plot_num].y_data
 
 
 class Graph(object):
