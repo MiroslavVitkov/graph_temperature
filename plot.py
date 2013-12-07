@@ -10,10 +10,6 @@ import matplotlib.pyplot as plt
 import collections as col
 import numpy as np
 
-# Assignment specific imports
-from dispatch import TIME_INTERVALS, MINUTE_S
-
-
 class Demuxer(object):
     """This class is assignment-specific."""
     def __init__(self, plots_spec):

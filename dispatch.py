@@ -67,7 +67,8 @@ class MainManager(object):
 
         # Draw
         # 1. parse
-        parsed_measurement = NOT IMPLEMENTED YET
+        # parsed_measurement = 
+        raise NotImplementedError
         # import random  # dummy
         # parsed_measurement = random.randint(-30000, 50000)
 
@@ -78,7 +79,7 @@ class MainManager(object):
         """After system reset, read previous logfiles and update plots.
 
         """
-        THIS FUNCTION IS NOT PROPERLY IMPLEMENTED YET
+        raise NotImplementedError
         y = self.log.read(interval_seconds=60,
                           step_seconds=1,
                           )
