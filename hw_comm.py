@@ -12,13 +12,13 @@ class Serial(object):
     def __init__(self, clb):
         self.clb = clb  # callback for new available measurement
         self.comm = serial.Serial(port='/dev/ttyUSB0',
-                                  baudrate=9600,  # 115200 is highest standard
+                                  baudrate=38400,  # 115200 is highest standard
                                   bytesize=serial.EIGHTBITS,
-                                  parity=serial.PARITY_NONE,
-                                  stopbits=serial.STOPBITS_ONE,
+                                  parity=serial.PARITY_EVEN,
+                                  stopbits=serial.STOPBITS_TWO,
                                   timeout=None,  # None==forever,
                                                  # 0=non-blocking,
-                                                 # foat=seconds
+                                                 # float=seconds
                                   xonxoff=False,  # sw flow control
                                   rtscts=False,  # hw flow control
                                   writeTimeout=None,  # see 'timeout'
@@ -28,8 +28,17 @@ class Serial(object):
 
     def listen_forever(self):
         """Blocking! Forever!"""
+        def rl(size=None, eol="\n"):
+            """pyserial's implementation does not support the eol parameter"""
+            ret = ""
+            while True:
+                x = self.comm.read()
+                ret = ret + x
+                if x == eol:
+                    return ret
+        self.comm.readline = rl
         while True:
-            measurement = self.comm.readline()
+            measurement = self.comm.readline(size=None, eol="\r")
             self.clb(measurement)
 
     def _generate_random_data(self):
@@ -45,7 +54,9 @@ class Serial(object):
 
 
 def main():
-    pass
+    def clb(x): print x
+    comm = Serial(clb=clb)
+    comm.listen_forever()
 
 if __name__ == "__main__":
     main()
