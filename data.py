@@ -14,8 +14,8 @@ class Logger(object):
     def __init__(self, workdir, backupdir=None, backup_interval=None):
         self.logfile = open('/'.join((workdir, FNAME_LOG)), 'a+')
 
-    def add_line(self, string):
-        self.logfile.write(string)
+    def add_line(self, line):
+        self.logfile.write(str(line))
 
     def read(self, interval_seconds, step_seconds):
         # TODO

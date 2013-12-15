@@ -5,6 +5,21 @@ updated XY-plots.
 
 """
 
+# Plotting settings
+MINUTE_S = 60
+HOUR_S = MINUTE_S * 60
+DAY_S = HOUR_S * 24
+WEEK_S = DAY_S * 7
+MONTH_S = DAY_S * 30
+YEAR_S = DAY_S * 365
+TIME_INTERVALS = [MINUTE_S,
+                  HOUR_S,
+                  DAY_S,
+                  WEEK_S,
+                  MONTH_S,
+                  YEAR_S,
+                  ]
+
 # Generic imports
 import matplotlib.pyplot as plt
 import collections as col
@@ -118,7 +133,7 @@ class Graph(object):
 ### General graphical utility calls. ###
 def get_screen_resolution():
     """Returns current width, height in pixels."""
-    return 1366, 768
+    return 1024, 600
 
 
 def main():

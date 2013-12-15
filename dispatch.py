@@ -4,6 +4,7 @@
                                  -> log
 
 Update minute, hour, day, week, month and year plots.
+Write to the log file.
 
 """
 
@@ -65,21 +66,14 @@ class MainManager(object):
         # Log
         self.log.add_line(measurement)
 
-        # Draw
-        # 1. parse
-        # parsed_measurement = 
-        raise NotImplementedError
-        # import random  # dummy
-        # parsed_measurement = random.randint(-30000, 50000)
-
-        # 2. update corresponding plots
-        self.plots.handle_new_value(parsed_measurement)
+        # Update corresponding plots
+        self.plots.handle_new_value(measurement)
 
     def load_initial(self):
         """After system reset, read previous logfiles and update plots.
 
         """
-        raise NotImplementedError
+        #raise NotImplementedError because we can't yet read the logs
         y = self.log.read(interval_seconds=60,
                           step_seconds=1,
                           )
