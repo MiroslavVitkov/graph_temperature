@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-"""Handle serial communication with the device and do callbacks.
+"""Receive line strings from device. Parse them and return numeric temperatures.
 
 """
 
 import serial
+import string
 
 
 class Serial(object):
@@ -39,7 +40,8 @@ class Serial(object):
         self.comm.readline = rl
         while True:
             measurement = self.comm.readline(size=None, eol="\r")
-            self.clb(measurement)
+            temp = self.parse_line_return_temp(measurement)
+            self.clb(temp)
 
     def _generate_random_data(self):
         """For debug purposes."""
@@ -48,9 +50,15 @@ class Serial(object):
             measurement = str(random.randint(-30000, 50000)) + "\n"
             self.clb(measurement)
 
-    def read_line(self):
-        """Blocks until newline is received."""
-        self.comm.readline()
+    def parse_line_return_temp(self, line):
+        """sample input:
+        Measured temperature: 7678;   converted temp: +13.8750; Relay control output: 1
+        sample output (as float):
+        13.8750   
+        """
+        s1 = string.split(s=line, sep=':')
+        s2 = string.split(s=s1[2], sep=';')
+        return float(s2[0])
 
 
 def main():
