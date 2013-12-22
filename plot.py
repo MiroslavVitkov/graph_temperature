@@ -34,12 +34,18 @@ class Demuxer(object):
     def handle_new_value(self, val):
         """Update relevant plots."""
         self._counter_samples += 1
+        print "value to handle: ", val
+
+        # Update shortest interval plot. This always happens.
+        self.w.add_datapoint(plot_number=0, y=val)
+
+        # Calculate the impact of a new point on the averaging plots.
         for i, v in enumerate(TIME_INTERVALS):
             if self._counter_samples % v == 0:
-                if v == MINUTE_S:
+                if v == MINUTE_S:  # no previous plot
                     val = val
                 else:
-                    val = self._get_average(plot_num=i-1)
+                    val = self._get_average(plot_num=i-1) # next shorter interval
                 self.w.add_datapoint(plot_number=i,
                                      y=val,
                                      )
@@ -152,7 +158,7 @@ def main():
                 p.add_datapoint(i)
                 fig.canvas.draw()
 
-    if 1:
+    if 0:
         """Test whole window."""
         import dispatch as conv
         import random
@@ -171,6 +177,21 @@ def main():
                 w.add_datapoint(plot_number=p,
                                 y=random.randint(MIN_TEMP, MAX_TEMP))
 
+    if 1:
+        """Utility to smartly graph incoming stream of floats."""
+        import sys
+        DATAPOINTS_PER_GRAPH = 60
+        PLOTS_SPEC = [dict(x_range=(0, d),
+                           y_range=(MIN_TEMP, MAX_TEMP),
+                           num_points=DATAPOINTS_PER_GRAPH)
+                      for d in TIME_INTERVALS
+                      ]
+
+        d = Demuxer(plots_spec=PLOTS_SPEC)
+        while True:
+            for value in sys.stdin:
+                    print "stdin: ", value
+                    d.handle_new_value(val=float(value))
 
 if __name__ == "__main__":
     main()
