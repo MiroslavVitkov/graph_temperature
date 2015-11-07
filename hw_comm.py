@@ -15,8 +15,8 @@ class Serial(object):
         self.comm = serial.Serial(port='/dev/ttyUSB0',
                                   baudrate=38400,  # 115200 is highest standard
                                   bytesize=serial.EIGHTBITS,
-                                  parity=serial.PARITY_EVEN,
-                                  stopbits=serial.STOPBITS_TWO,
+                                  parity=serial.PARITY_NONE,
+                                  stopbits=serial.STOPBITS_ONE,
                                   timeout=None,  # None==forever,
                                                  # 0=non-blocking,
                                                  # float=seconds
@@ -51,14 +51,9 @@ class Serial(object):
             self.clb(measurement)
 
     def parse_line_return_temp(self, line):
-        """sample input:
-        Measured temperature: 7678;   converted temp: +13.8750; Relay control output: 1
-        sample output (as float):
-        13.8750   
-        """
-        s1 = string.split(s=line, sep=':')
-        s2 = string.split(s=s1[2], sep=';')
-        return float(s2[0])
+        s1 = string.split(s=line, sep=' ')
+        s2 = string.split(s=s1[2], sep=' ')
+        return (float(s2[0]) / 10 )
 
 
 def main():
