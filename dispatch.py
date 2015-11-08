@@ -34,9 +34,8 @@ TIME_INTERVALS = [MINUTE_S,
                   YEAR_S,
                   ]
 
-# temp_C * 10 ^ 3 -> temp_maxres
-MAX_TEMP = 50000
-MIN_TEMP = -30000
+MAX_TEMP = 100
+MIN_TEMP = -10
 TEMP_RANGE = MAX_TEMP - MIN_TEMP
 
 DATAPOINTS_PER_GRAPH = 60

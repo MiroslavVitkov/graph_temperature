@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-"""A colelction of classes for high-quality, dynamically
-updated XY-plots.
+"""A colelction of classes for dynamically updated XY-plots.
 
 """
+
+#TODO: move here the definition of MIN_TEMP, MAX_TEMP
 
 # Plotting settings
 MINUTE_S = 60
@@ -34,21 +35,17 @@ class Demuxer(object):
     def handle_new_value(self, val):
         """Update relevant plots."""
         self._counter_samples += 1
-        print "value to handle: ", val
 
         # Update shortest interval plot. This always happens.
         self.w.add_datapoint(plot_number=0, y=val)
 
         # Calculate the impact of a new point on the averaging plots.
         for i, v in enumerate(TIME_INTERVALS):
+            target_plot = i + 1
             if self._counter_samples % v == 0:
-                if v == MINUTE_S:  # no previous plot
-                    val = val
-                else:
-                    val = self._get_average(plot_num=i-1) # next shorter interval
-                self.w.add_datapoint(plot_number=i,
-                                     y=val,
-                                     )
+                avv_val = self._get_average(plot_num = target_plot - 1) # next shorter interval
+                self.w.add_datapoint(plot_number=target_plot,
+                                     y=avv_val)
 
     def _get_average(self, plot_num):
         data = self.w.get_yaxis(plot_num=plot_num)
@@ -139,7 +136,7 @@ class Graph(object):
 ### General graphical utility calls. ###
 def get_screen_resolution():
     """Returns current width, height in pixels."""
-    return 1024, 600
+    return 1366, 768
 
 
 def main():
@@ -189,8 +186,7 @@ def main():
 
         d = Demuxer(plots_spec=PLOTS_SPEC)
         while True:
-            for value in sys.stdin:
-                    print "stdin: ", value
+            for value in range(100):
                     d.handle_new_value(val=float(value))
 
 if __name__ == "__main__":
