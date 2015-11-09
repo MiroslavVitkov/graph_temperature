@@ -4,15 +4,19 @@
 
 """
 
-#TODO: move here the definition of MIN_TEMP, MAX_TEMP
-
-# Plotting settings
+# Constants
 MINUTE_S = 60
 HOUR_S = MINUTE_S * 60
 DAY_S = HOUR_S * 24
 WEEK_S = DAY_S * 7
 MONTH_S = DAY_S * 30
 YEAR_S = DAY_S * 365
+
+
+# Settings
+MAX_TEMP = 60
+MIN_TEMP = -10
+TEMP_RANGE = MAX_TEMP - MIN_TEMP
 TIME_INTERVALS = [MINUTE_S,
                   HOUR_S,
                   DAY_S,
@@ -21,13 +25,13 @@ TIME_INTERVALS = [MINUTE_S,
                   YEAR_S,
                   ]
 
-# Generic imports
+# Imports
 import matplotlib.pyplot as plt
 import collections as col
 import numpy as np
 
 class Demuxer(object):
-    """This class is assignment-specific."""
+    """Based on input temperature, update plots as needed"""
     def __init__(self, plots_spec):
         self.w = Window(plots_spec=plots_spec)
         self._counter_samples = 0
@@ -40,6 +44,7 @@ class Demuxer(object):
         self.w.add_datapoint(plot_number=0, y=val)
 
         # Calculate the impact of a new point on the averaging plots.
+        # We skip the first plot, because it is already covered above.
         for i, v in enumerate(TIME_INTERVALS):
             target_plot = i + 1
             if self._counter_samples % v == 0:
@@ -140,54 +145,19 @@ def get_screen_resolution():
 
 
 def main():
-    from dispatch import MAX_TEMP, MIN_TEMP
-    if 0:
-        """Test just Graph class."""
-        plt.ion()
-        fig = plt.figure(figsize=(15,9)) # dpi == 80
-        p = Graph(window=fig, subplot_num=111,
-                  x_axis=range(MIN_TEMP, MAX_TEMP, 1000),
-                  y_axis=range(MIN_TEMP, MAX_TEMP, 1000),
-                  )
-        for j in range(1, 5):
-            print "Run", j
-            for i in range(0, 32768, 1000):  # about half of the maximum
-                p.add_datapoint(i)
-                fig.canvas.draw()
+    """Utility to smartly graph incoming stream of floats."""
+    import sys
+    DATAPOINTS_PER_GRAPH = 60
+    PLOTS_SPEC = [dict(x_range=(0, d),
+                       y_range=(MIN_TEMP, MAX_TEMP),
+                       num_points=DATAPOINTS_PER_GRAPH)
+                  for d in TIME_INTERVALS
+                  ]
 
-    if 0:
-        """Test whole window."""
-        import dispatch as conv
-        import random
-        print conv.TIME_INTERVALS
-        DATAPOINTS_PER_GRAPH = 200
-        PLOTS_SPEC = [dict(x_range=(0, d),
-                           y_range=(MIN_TEMP, MAX_TEMP),
-                           num_points=DATAPOINTS_PER_GRAPH)
-                      for d in conv.TIME_INTERVALS
-                      ]
-
-        w = Window(plots_spec=PLOTS_SPEC)
-        for i in range(1, 10):
-            print "Run", i
-            for p in range(len(PLOTS_SPEC)):
-                w.add_datapoint(plot_number=p,
-                                y=random.randint(MIN_TEMP, MAX_TEMP))
-
-    if 1:
-        """Utility to smartly graph incoming stream of floats."""
-        import sys
-        DATAPOINTS_PER_GRAPH = 60
-        PLOTS_SPEC = [dict(x_range=(0, d),
-                           y_range=(MIN_TEMP, MAX_TEMP),
-                           num_points=DATAPOINTS_PER_GRAPH)
-                      for d in TIME_INTERVALS
-                      ]
-
-        d = Demuxer(plots_spec=PLOTS_SPEC)
-        while True:
-            for value in range(100):
-                    d.handle_new_value(val=float(value))
+    d = Demuxer(plots_spec=PLOTS_SPEC)
+    while True:
+        for value in range(100):
+            d.handle_new_value(val=float(value))
 
 if __name__ == "__main__":
     main()
