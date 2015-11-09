@@ -19,10 +19,10 @@ MIN_TEMP = -10
 TEMP_RANGE = MAX_TEMP - MIN_TEMP
 TIME_INTERVALS = [MINUTE_S,
                   HOUR_S,
-                  DAY_S,
-                  WEEK_S,
-                  MONTH_S,
-                  YEAR_S,
+#                  DAY_S,
+#                  WEEK_S,
+#                  MONTH_S,
+#                  YEAR_S,
                   ]
 
 # Imports
@@ -80,8 +80,7 @@ class Window(object):
         # Create the individual plots
         self.plots = []
         plots_num = len(plots_spec)
-        half = plots_num / 2
-        plots_map = half * 100 +  (plots_num - half) * 10  # 990 to 110, 0 is the current plot
+        plots_map = 100 + plots_num * 10  # 234 means 2x3 grid, 4th subplot
         for i, p in enumerate(plots_spec):
             def get_axis(min, max, points):
                 a = np.linspace(min, max, points)
