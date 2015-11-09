@@ -7,6 +7,8 @@
 import serial
 import string
 
+MAX_TEMP = 60
+MIN_TEMP = -10
 
 class Serial(object):
     """Serial duplex communication."""
@@ -47,7 +49,7 @@ class Serial(object):
         """For debug purposes."""
         import random
         while True:
-            measurement = str(random.randint(-30000, 50000)) + "\n"
+            measurement = str(random.randint(MIN_TEMP, MAX_TEMP)) + "\n"
             self.clb(measurement)
 
     def parse_line_return_temp(self, line):

@@ -156,8 +156,8 @@ def main():
 
     d = Demuxer(plots_spec=PLOTS_SPEC)
     while True:
-        for value in range(100):
-            d.handle_new_value(val=float(value))
+        value = sys.stdin.readline()
+        d.handle_new_value(val=float(value))
 
 if __name__ == "__main__":
     main()
