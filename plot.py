@@ -45,7 +45,7 @@ class Demuxer(object):
 
         # Calculate the impact of a new point on the averaging plots.
         # We skip the first plot, because it is already covered above.
-        for i, v in enumerate(TIME_INTERVALS):
+        for i, v in enumerate(TIME_INTERVALS[:-1]):
             target_plot = i + 1
             if self._counter_samples % v == 0:
                 avv_val = self._get_average(plot_num = target_plot - 1) # next shorter interval
