@@ -49,7 +49,7 @@ class Serial(object):
         """For debug purposes."""
         import random
         while True:
-            measurement = 42 #str(random.randint(MIN_TEMP, MAX_TEMP)) + "\n"
+            measurement = str(random.randint(MIN_TEMP, MAX_TEMP)) + ".0"
             self.clb(measurement)
 
     def parse_line_return_temp(self, line):
