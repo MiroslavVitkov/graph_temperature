@@ -6,9 +6,11 @@
 
 import serial
 import string
+import sys
 
 MAX_TEMP = 60
 MIN_TEMP = -10
+NEWLINE = "\n"
 
 class Serial(object):
     """Serial duplex communication."""
@@ -31,7 +33,7 @@ class Serial(object):
 
     def listen_forever(self):
         """Blocking! Forever!"""
-        def rl(size=None, eol="\n"):
+        def rl(size=None, eol=NEWLINE):
             """pyserial's implementation does not support the eol parameter"""
             ret = ""
             while True:
@@ -41,7 +43,7 @@ class Serial(object):
                     return ret
         self.comm.readline = rl
         while True:
-            measurement = self.comm.readline(size=None, eol="\r")
+            measurement = self.comm.readline()
             temp = self.parse_line_return_temp(measurement)
             self.clb(temp)
 
@@ -59,7 +61,9 @@ class Serial(object):
 
 
 def main():
-    def clb(x): print x
+    def clb(x):
+        print x
+        sys.stdout.flush()
     comm = Serial(clb=clb)
     comm.listen_forever()
 
