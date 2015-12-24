@@ -55,9 +55,8 @@ class Serial(object):
             self.clb(measurement)
 
     def parse_line_return_temp(self, line):
-        s1 = string.split(s=line, sep=' ')
-        s2 = string.split(s=s1[2], sep=' ')
-        return (float(s2[0]) / 10 )
+        s1 = string.split(s=line, sep=' ')  # time decicelsius
+        return (float(s1[1]) / 10 )
 
 
 def main():
