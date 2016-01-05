@@ -45,7 +45,8 @@ class Serial(object):
         while True:
             measurement = self.comm.readline()
             temp = self.parse_line_return_temp(measurement)
-            self.clb(temp)
+            if temp is not None:
+                self.clb(temp)
 
     def _generate_random_data(self):
         """For debug purposes."""
@@ -55,8 +56,11 @@ class Serial(object):
             self.clb(measurement)
 
     def parse_line_return_temp(self, line):
-        s1 = string.split(s=line, sep=' ')  # time decicelsius
-        return (float(s1[1]) / 10 )
+        try:
+            s1 = string.split(s=line, sep=' ')  # time decicelsius
+            return (float(s1[1]) / 10 )
+        except ValueError:
+            return None
 
 
 def main():
