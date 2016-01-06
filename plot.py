@@ -15,7 +15,7 @@ YEAR_S = DAY_S * 365
 
 # Settings
 MAX_TEMP = 60
-MIN_TEMP = -10
+MIN_TEMP = 10
 TEMP_RANGE = MAX_TEMP - MIN_TEMP
 TIME_INTERVALS = [MINUTE_S,
                   HOUR_S,
