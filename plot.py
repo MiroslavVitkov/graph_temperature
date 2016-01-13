@@ -117,7 +117,7 @@ class Graph(object):
         ax = window.add_subplot(subplot_num)
 
         # Obtain handle to y-axis
-        line, = ax.plot(x_axis, y_axis) # set here axis ranges
+        line, = ax.plot(x_axis, y_axis, marker='^') # set here axis ranges
         self.y = line
 
         # Remember list of datapoints
