@@ -133,7 +133,7 @@ class Graph(object):
         self.y.set_ydata(self.y_data)  # pyPlot call
 
     def add_datapoint(self, y):
-        self.y_data.append(y)  # remember - circular buffer
+        self.y_data.appendleft(y)  # remember - circular buffer
         self.y.set_ydata(self.y_data)
 
 
