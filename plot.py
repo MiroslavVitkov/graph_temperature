@@ -95,10 +95,6 @@ class Window(object):
 
     # Redrawing belongs here for fine control over this time-consuming operation.
     # Note that fig.canvas.draw() redraws the whole window!
-    def update_figure(self, plot_number, y_data):
-        self.plots[plot_number].update_figure(y_data)
-        self.fig.canvas.draw()
-
     def add_datapoint(self, plot_number, y):
         self.plots[plot_number].add_datapoint(y)
         self.fig.canvas.draw()
@@ -113,27 +109,21 @@ class Graph(object):
 
     """
     def __init__(self, window, subplot_num, x_axis, y_axis):
-        # Draw self
         ax = window.add_subplot(subplot_num)
-
-        # Obtain handle to y-axis
-        line, = ax.plot(x_axis, y_axis, marker='^') # set here axis ranges
-        self.y = line
-
-        # Remember list of datapoints
-        self.y_data = col.deque(y_axis,
-                                maxlen=len(y_axis))  # circular buffer
+        self.y, = ax.plot(x_axis,                # Obtain handle to y axis.
+                          y_axis,
+                          marker='^'
+                          )
+        self.y_data = col.deque(y_axis,          # Circular buffer.
+                                maxlen=len(y_axis)
+                                )
 
         # Make plot prettier
         plt.grid(True)
         plt.tight_layout()
 
-    def update_figure(self, new_y_data):
-        self.y_data = new_y_data
-        self.y.set_ydata(self.y_data)  # pyPlot call
-
     def add_datapoint(self, y):
-        self.y_data.appendleft(y)  # remember - circular buffer
+        self.y_data.appendleft(y)                # Remember - circular buffer.
         self.y.set_ydata(self.y_data)
 
 
