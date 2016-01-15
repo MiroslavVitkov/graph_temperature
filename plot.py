@@ -113,13 +113,19 @@ class Graph(object):
                           x_axis,
                           marker='^'
                           )
-        self.y_data = col.deque(x_axis,          # Circular buffer.
+        # Hack: because initially the graph has too few y points, compared to x points,
+        # nothing should be shown on the graph.
+        # The hack is that initial y axes is seto be be below in hell.
+        self.y_data = col.deque(len(x_axis)*[-9999,],          # Circular buffer.
                                 maxlen=len(x_axis)
                                 )
 
         # Make plot prettier
         plt.grid(True)
         plt.tight_layout()
+        ax.set_ylim(MAX_TEMP, MIN_TEMP)
+        ax.set_xlim(0, 59)
+
 
     def add_datapoint(self, y):
         self.y_data.appendleft(y)                # Remember - circular buffer.
