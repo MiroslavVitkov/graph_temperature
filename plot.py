@@ -87,9 +87,8 @@ class Window(object):
                 return [int(round(f)) for f in a]
 
             x_axis = get_axis(p['x_range'][0], p['x_range'][1], p['num_points'])
-            y_axis = get_axis(p['y_range'][0], p['y_range'][1], p['num_points'])
             graph = Graph(window=self.fig, subplot_num=plots_map + i + 1,  # add last digit
-                          x_axis=x_axis, y_axis=y_axis,
+                          x_axis=x_axis,
                           )
             self.plots.append(graph)
 
@@ -108,14 +107,14 @@ class Graph(object):
     have both minimum and maximum possible values.
 
     """
-    def __init__(self, window, subplot_num, x_axis, y_axis):
+    def __init__(self, window, subplot_num, x_axis):
         ax = window.add_subplot(subplot_num)
         self.y, = ax.plot(x_axis,                # Obtain handle to y axis.
-                          y_axis,
+                          x_axis,
                           marker='^'
                           )
-        self.y_data = col.deque(y_axis,          # Circular buffer.
-                                maxlen=len(y_axis)
+        self.y_data = col.deque(x_axis,          # Circular buffer.
+                                maxlen=len(x_axis)
                                 )
 
         # Make plot prettier
