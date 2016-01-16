@@ -36,16 +36,16 @@ class Demuxer(object):
         self.w = Window()
         self._counter_samples = 0
 
-    def handle_new_value(self, val):
+    def handle_new_value(self, vals):
         """Update relevant plots."""
         self._counter_samples += 1
 
         # Update shortest interval plot. This always happens.
-        self.w.add_datapoint(plot_number=0, y=val)
+        self.w.add_datapoint(plot_number=0, y=vals[0])
 
         # Calculate the impact of a new point on the averaging plots.
         # We skip the first plot, because it is already covered above.
-        for i, v in enumerate(TIME_INTERVALS[:-1]):  #TODO: wrong?
+        for i, v in enumerate(TIME_INTERVALS[:-1]):
             target_plot = i + 1
             if self._counter_samples % v == 0:
                 avv_val = self._get_average(plot_num = target_plot - 1) # next shorter interval
@@ -130,7 +130,7 @@ def main():
             cast = [float(v) for v in values]
         except:
             pass
-        d.handle_new_value(cast[0])
+        d.handle_new_value(cast)
 
 
 if __name__ == "__main__":
