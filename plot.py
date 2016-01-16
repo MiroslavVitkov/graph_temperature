@@ -123,8 +123,15 @@ def main():
     import sys
     d = Demuxer()
     while True:
-        value = sys.stdin.readline()
-        d.handle_new_value(val=float(value))
+        # Plot space delimited line of measurements.
+        line = sys.stdin.readline()
+        try:
+            values = line.split()
+            cast = [float(v) for v in values]
+        except:
+            pass
+        d.handle_new_value(cast[0])
+
 
 if __name__ == "__main__":
     main()
