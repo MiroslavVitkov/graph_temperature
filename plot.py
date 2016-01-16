@@ -16,7 +16,7 @@ YEAR_S = DAY_S * 365
 # Settings
 MAX_TEMP = 60
 MIN_TEMP = 10
-TEMP_RANGE = MAX_TEMP - MIN_TEMP
+DATAPOINTS_PER_GRAPH = 60
 TIME_INTERVALS = [MINUTE_S,
                   HOUR_S,
 #                  DAY_S,
@@ -32,8 +32,8 @@ import numpy as np
 
 class Demuxer(object):
     """Based on input temperature, update plots as needed"""
-    def __init__(self, plots_spec):
-        self.w = Window(plots_spec=plots_spec)
+    def __init__(self):
+        self.w = Window()
         self._counter_samples = 0
 
     def handle_new_value(self, val):
@@ -45,7 +45,7 @@ class Demuxer(object):
 
         # Calculate the impact of a new point on the averaging plots.
         # We skip the first plot, because it is already covered above.
-        for i, v in enumerate(TIME_INTERVALS[:-1]):
+        for i, v in enumerate(TIME_INTERVALS[:-1]):  #TODO: wrong?
             target_plot = i + 1
             if self._counter_samples % v == 0:
                 avv_val = self._get_average(plot_num = target_plot - 1) # next shorter interval
@@ -62,11 +62,7 @@ class Window(object):
      y-axis plots. Temperature range aware. Takes up the whole screen.
 
     """
-    def __init__(self, plots_spec):
-        """plots_spec - list of dicts:
-            x_range, y_range, num_points
-
-        """
+    def __init__(self):
         # Redraw plots as soon as self.fig.canvas.draw() is called.
         plt.ion()
 
@@ -79,17 +75,10 @@ class Window(object):
 
         # Create the individual plots
         self.plots = []
-        plots_num = len(plots_spec)
-        plots_map = 100 + plots_num * 10  # 234 means 2x3 grid, 4th subplot
-        for i, p in enumerate(plots_spec):
-            def get_axis(min, max, points):
-                a = np.linspace(min, max, points)
-                return [int(round(f)) for f in a]
-
-            x_axis = get_axis(p['x_range'][0], p['x_range'][1], p['num_points'])
-            graph = Graph(window=self.fig, subplot_num=plots_map + i + 1,  # add last digit
-                          x_axis=x_axis,
-                          )
+        plots_map = 100 + len(TIME_INTERVALS) * 10   # 234 means 2x3 grid, 4th subplot
+        for i, d in enumerate(TIME_INTERVALS):
+            x_axis = np.linspace(0, d, DATAPOINTS_PER_GRAPH)
+            graph = Graph(window=self.fig, subplot_num=plots_map + i + 1, x_axis=x_axis)
             self.plots.append(graph)
 
     # Redrawing belongs here for fine control over this time-consuming operation.
@@ -103,10 +92,6 @@ class Window(object):
 
 
 class Graph(object):
-    """Single 2-D dynamic plot. The axes must be same length and
-    have both minimum and maximum possible values.
-
-    """
     def __init__(self, window, subplot_num, x_axis):
         ax = window.add_subplot(subplot_num)
         self.y, = ax.plot(x_axis,                # Obtain handle to y axis.
@@ -123,32 +108,20 @@ class Graph(object):
         # Make plot prettier
         plt.grid(True)
         plt.tight_layout()
-        ax.set_ylim(MAX_TEMP, MIN_TEMP)
-        ax.set_xlim(0, 59)
-
+        ax.set_ylim(MIN_TEMP, MAX_TEMP)
 
     def add_datapoint(self, y):
         self.y_data.appendleft(y)                # Remember - circular buffer.
         self.y.set_ydata(self.y_data)
 
 
-### General graphical utility calls. ###
 def get_screen_resolution():
-    """Returns current width, height in pixels."""
     return 1366, 768
 
 
 def main():
-    """Utility to smartly graph incoming stream of floats."""
     import sys
-    DATAPOINTS_PER_GRAPH = 60
-    PLOTS_SPEC = [dict(x_range=(0, d),
-                       y_range=(MIN_TEMP, MAX_TEMP),
-                       num_points=DATAPOINTS_PER_GRAPH)
-                  for d in TIME_INTERVALS
-                  ]
-
-    d = Demuxer(plots_spec=PLOTS_SPEC)
+    d = Demuxer()
     while True:
         value = sys.stdin.readline()
         d.handle_new_value(val=float(value))
