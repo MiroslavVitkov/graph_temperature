@@ -98,8 +98,8 @@ class Graph(object):
     # Each deque represents a circular buffer of a single signal.
     def __init__(self, window, subplot_num, x_axis, dim=2):
         ax = window.add_subplot(subplot_num)
-        self.y, = ax.plot(x_axis,                # Obtain handle to y axis.
-                          x_axis,
+        self.y = ax.plot(x_axis, x_axis,                # Obtain handle to y axis.
+                          x_axis, x_axis,
                           marker='^'
                           )
         # Hack: because initially the graph has too few y points, compared to x points,
@@ -123,7 +123,7 @@ class Graph(object):
 
         for i in range( len(y) ):
             self.y_data[i].appendleft(y[i])
-            self.y.set_ydata( self.y_data[i] )
+            self.y[i].set_ydata( self.y_data[i] )
 
 
 def get_screen_resolution():
