@@ -92,7 +92,11 @@ class Window(object):
 
 
 class Graph(object):
-    def __init__(self, window, subplot_num, x_axis):
+    # Datapoints 'y' can contain arbitrary number of elements.
+    # Each index in 'y' is treated as separate signal.
+    # Signal hystory is kept as list of deques.
+    # Each deque represents a circular buffer of a single signal.
+    def __init__(self, window, subplot_num, x_axis, dim=2):
         ax = window.add_subplot(subplot_num)
         self.y, = ax.plot(x_axis,                # Obtain handle to y axis.
                           x_axis,
@@ -111,7 +115,11 @@ class Graph(object):
         ax.set_ylim(MIN_TEMP, MAX_TEMP)
 
     def add_datapoint(self, y):
-        self.y_data.appendleft(y)                # Remember - circular buffer.
+        try:
+            data = y[0]
+        except:
+            data = y
+        self.y_data.appendleft(data)
         self.y.set_ydata(self.y_data)
 
 
