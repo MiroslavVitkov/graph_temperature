@@ -41,7 +41,7 @@ class Demuxer(object):
         self._counter_samples += 1
 
         # Update shortest interval plot. This always happens.
-        self.w.add_datapoint(plot_number=0, y=vals[0])
+        self.w.add_datapoint(plot_number=0, y=vals)
 
         # Calculate the impact of a new point on the averaging plots.
         # We skip the first plot, because it is already covered above.
@@ -52,7 +52,7 @@ class Demuxer(object):
                 self.w.add_datapoint(plot_number=target_plot,
                                      y=avv_val)
 
-    def _get_average(self, plot_num):
+    def _get_average(self, plot_num):  # TODO: vectorize!
         data = self.w.get_yaxis(plot_num=plot_num)
         average = np.mean(data)
         return average
@@ -104,10 +104,13 @@ class Graph(object):
                           )
         # Hack: because initially the graph has too few y points, compared to x points,
         # nothing should be shown on the graph.
-        # The hack is that initial y axes is seto be be below in hell.
-        self.y_data = col.deque(len(x_axis)*[-9999,],          # Circular buffer.
-                                maxlen=len(x_axis)
-                                )
+        # The hack is that initial y axis is seto be be below in hell.
+        self.y_data = []
+        for i in range(dim):
+            self.y_data.append( col.deque(len(x_axis)*[-9999,],          # Circular buffer.
+                                          maxlen=len(x_axis)
+                                          )
+                              )
 
         # Make plot prettier
         plt.grid(True)
@@ -115,12 +118,12 @@ class Graph(object):
         ax.set_ylim(MIN_TEMP, MAX_TEMP)
 
     def add_datapoint(self, y):
-        try:
-            data = y[0]
-        except:
-            data = y
-        self.y_data.appendleft(data)
-        self.y.set_ydata(self.y_data)
+        if not isinstance(y, col.Sequence):
+            y = [y,]
+
+        for i in range( len(y) ):
+            self.y_data[i].appendleft(y[i])
+            self.y.set_ydata( self.y_data[i] )
 
 
 def get_screen_resolution():
