@@ -10,7 +10,7 @@ import sys
 import time
 
 MAX_TEMP = 60
-MIN_TEMP = 10
+MIN_TEMP = 0
 NEWLINE = "\n"
 
 class Serial(object):
@@ -52,7 +52,7 @@ class Serial(object):
             measurement = self.comm.readline()
             temp = self._parse_line_return_temp(measurement)
             if temp is not None:
-                print x
+                print temp[0], temp[1]
 
     def _generate_random_data(self):
         """For debug purposes."""
@@ -65,7 +65,7 @@ class Serial(object):
     def _parse_line_return_temp(self, line):
         try:
             s1 = string.split(s=line, sep=' ')  # time decicelsius
-            return (float(s1[1]) / 10 )
+            return (float(s1[1]) / 10), (float(s1[2]) / 10)
         except ValueError:
             return None
 
