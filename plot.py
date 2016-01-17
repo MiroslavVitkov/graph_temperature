@@ -48,14 +48,14 @@ class Demuxer(object):
         for i, v in enumerate(TIME_INTERVALS[:-1]):
             target_plot = i + 1
             if self._counter_samples % v == 0:
-                avv_val = self._get_average(plot_num = target_plot - 1) # next shorter interval
+                avv_vals = self._get_average(plot_num = target_plot - 1) # next shorter interval
                 self.w.add_datapoint(plot_number=target_plot,
-                                     y=avv_val)
+                                     y=avv_vals)
 
     def _get_average(self, plot_num):  # TODO: vectorize!
         data = self.w.get_yaxis(plot_num=plot_num)
-        average = np.mean(data)
-        return average
+        average = np.mean(data, axis=1)
+        return list(average)
 
 class Window(object):
     """Holds a collection of equally-sized, static x-axis, dynamic
