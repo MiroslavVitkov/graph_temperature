@@ -95,13 +95,14 @@ class Graph(object):
     # Datapoints 'y' can contain arbitrary number of elements.
     # Each index in 'y' is treated as separate signal.
     # Signal hystory is kept as list of deques.
-    # Each deque represents a circular buffer of a single signal.
+    # Each deque represents1 a circular buffer of a single signal.
     def __init__(self, window, subplot_num, x_axis, dim=2):
         ax = window.add_subplot(subplot_num)
-        self.y = ax.plot(x_axis, x_axis,                # Obtain handle to y axis.
-                          x_axis, x_axis,
-                          marker='^'
-                          )
+        l = len(x_axis)
+        self.y = ax.plot(range(l), l*[-1,], '-',       # Obtain handle to y axis.
+                         range(l), l*[-1,], '--',
+                         marker='^'
+                         )
         # Hack: because initially the graph has too few y points, compared to x points,
         # nothing should be shown on the graph.
         # The hack is that initial y axis is seto be be below in hell.
@@ -116,6 +117,13 @@ class Graph(object):
         plt.grid(True)
         plt.tight_layout()
         ax.set_ylim(MIN_TEMP, MAX_TEMP)
+        plt.figlegend(self.y, ('tempr', 'ctrl'), 'upper right');
+        ax.set_ylabel('temperature [C]')
+        # Terrible hack!
+        if subplot_num == 121:
+            ax.set_xlabel('time [s]')
+        else:
+            ax.set_xlabel('time [min]')
 
     def add_datapoint(self, y):
         if not isinstance(y, col.Sequence):
