@@ -15,8 +15,9 @@ NEWLINE = "\n"
 
 class Serial(object):
     """Serial duplex communication."""
-    def __init__(self, simulate=False):
+    def __init__(self, raw=False, simulate=False):
         self.simulate = simulate
+        self.raw = raw
         if not simulate:
             self.comm = serial.Serial(port='/dev/ttyUSB0',
                                       baudrate=38400,
@@ -48,11 +49,15 @@ class Serial(object):
                 if x == eol:
                     return ret
         self.comm.readline = rl
+
         while True:
             measurement = self.comm.readline()
-            temp = self._parse_line_return_temp(measurement)
-            if temp is not None:
-                print temp[0], temp[1]
+            if self.raw:
+                print measurement
+            else:
+                temp = self._parse_line_return_temp(measurement)
+                if temp is not None:
+                    print temp[0], temp[1]
 
     def _generate_random_data(self):
         """For debug purposes."""
@@ -71,7 +76,15 @@ class Serial(object):
 
 
 def main():
-    comm = Serial(simulate=False)
+    import sys
+    raw = False
+    simulate = False
+    for arg in sys.argv:
+        if arg == '--raw':
+            raw = True
+        if arg == '--sim':
+            simulate = True
+    comm = Serial(raw=raw, simulate=simulate)
     comm.run()
 
 if __name__ == "__main__":

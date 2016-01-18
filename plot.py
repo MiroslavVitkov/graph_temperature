@@ -147,9 +147,9 @@ def main():
         try:
             values = line.split()
             cast = [float(v) for v in values]
+            d.handle_new_value(cast)
         except:
             pass
-        d.handle_new_value(cast)
 
 
 if __name__ == "__main__":
