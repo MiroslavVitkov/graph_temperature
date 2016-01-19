@@ -45,9 +45,9 @@ class Serial(object):
             ret = ""
             while True:
                 x = self.comm.read()
-                ret = ret + x
                 if x == eol:
                     return ret
+                ret = ret + x
         self.comm.readline = rl
 
         while True:
