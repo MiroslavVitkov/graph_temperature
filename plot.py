@@ -143,8 +143,8 @@ def main():
     d = Demuxer()
     while True:
         # Plot space delimited line of measurements.
-        line = sys.stdin.readline()
         try:
+            line = sys.stdin.readline()
             values = line.split()
             cast = [float(v) for v in values]
             d.handle_new_value(cast)
