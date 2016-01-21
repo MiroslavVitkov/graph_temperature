@@ -129,6 +129,7 @@ class Graph(object):
         if not isinstance(y, col.Sequence):
             y = [y,]
 
+        print "y is ", y
         for i in range( len(y) ):
             self.y_data[i].appendleft(y[i])
             self.y[i].set_ydata( self.y_data[i] )
