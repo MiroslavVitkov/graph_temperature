@@ -64,7 +64,7 @@ class Serial(object):
         import random
         while True:
             measurement = str(random.randint(MIN_TEMP, MAX_TEMP)) + ".0"
-            print measurement, float(measurement) / 2 # TODO: adapt _parse_line_return_temp()
+            print 0, measurement, float(measurement) / 2 # TODO: adapt _parse_line_return_temp()
             time.sleep(0.3)
 
     def _parse_line_return_temp(self, line):

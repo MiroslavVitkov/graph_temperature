@@ -146,7 +146,7 @@ def main():
         try:
             line = sys.stdin.readline()
             values = line.split()
-            cast = [float(v) for v in values]
+            cast = (values[1], values[2])
             d.handle_new_value(cast)
         except:
             pass
