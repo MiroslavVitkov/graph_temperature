@@ -1,7 +1,1 @@
 Realtime temperature plotting utility.
-
-Run those in separate shells
-./hw_comm > log                                  # Reading from the serial port seems to lock it up.
-tail -f log                                      # Print the measured values.
-tail -f log | ./plot.py                          # Plot the measured values.
-
