@@ -48,12 +48,13 @@ class Demuxer(object):
         for i, v in enumerate(TIME_INTERVALS[:-1]):
             target_plot = i + 1
             if self._counter_samples % v == 0:
-                avv_vals = self._get_average(plot_num = target_plot - 1) # next shorter interval
+                #avv_vals = self._get_average(plot_num = target_plot - 1) # next shorter interval
                 self.w.add_datapoint(plot_number=target_plot,
-                                     y=avv_vals)
+                                     y=vals)  # TODO: use avv_vals
 
     def _get_average(self, plot_num):  # TODO: vectorize!
         data = self.w.get_yaxis(plot_num=plot_num)
+        # np.mean() silently hangs :(
         average = np.mean(data, axis=1)
         return list(average)
 
@@ -129,7 +130,6 @@ class Graph(object):
         if not isinstance(y, col.Sequence):
             y = [y,]
 
-        print "y is ", y
         for i in range( len(y) ):
             self.y_data[i].appendleft(y[i])
             self.y[i].set_ydata( self.y_data[i] )
